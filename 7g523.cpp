@@ -47,8 +47,10 @@ public:
     virtual void addCard(Card card) = 0;
     virtual void sortCards() = 0;
     virtual void printCards() const = 0;
+    virtual vector<Card> action(/* class SceneResource  */) = 0;
     virtual int  getCurrentCardNum() { return _currentCardNum; };
     virtual int  getMaxCardNum() { return _maxCardNum; }
+    virtual string getName() { return _name; }
 
     string _name;
     int _currentCardNum;
@@ -73,6 +75,10 @@ public:
         }
         cout << endl;
     }
+    vector<Card> action() {
+        _currentCardNum = 0;
+        return _cards;
+    }
 private:
     vector<Card> _cards;
 };
@@ -94,10 +100,19 @@ public:
         }
         cout << endl;
     }
+    vector<Card> action() {
+        _currentCardNum = 0;
+        return _cards;
+    }
 private:
     vector<Card> _cards;
 };
 
+// 应该有个场景资源管理类，Game只是流程管理
+
+/**
+ * 流程管理
+ */
 class Game {
 public:
     Game(int human_num, int computer_num): _human_num(human_num), _computer_num(computer_num) {
@@ -120,12 +135,7 @@ public:
     void start() {
         // 发牌
         dealCards();
-
-        // 输出卡牌
-        for (int i = 0; i < _players.size(); i++) {
-            _players[i]->sortCards();
-            _players[i]->printCards();
-        }
+        play();
     }
 
     void dealCards() {
@@ -137,6 +147,21 @@ public:
                 _players[j]->addCard(_cards.back());
                 _cards.pop_back();
             }
+            _players[j]->sortCards();
+        }
+    }
+    void play() {
+        // 输出卡牌
+        for (int i = 0; i < _players.size(); i++) {
+            // get play cards and show with scene
+            vector<Card> cardsToShow = _players[i]->action();
+            cout << "[" << _players[i]->getName() << "] ";
+            for (const auto& card : cardsToShow) {
+                card.print();
+            }
+            cout << endl;
+
+            _disposed_cards.insert(_disposed_cards.end(), cardsToShow.begin(), cardsToShow.end());
         }
     }
 private:
