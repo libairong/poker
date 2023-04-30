@@ -2,6 +2,8 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <map>
+
 using namespace std;
 
 const string CARD_COLOR[4] = {"♣", "♦", "♥", "♠"};
@@ -37,6 +39,16 @@ private:
     int _value;
 };
 
+class Scene {
+public:
+    Scene() {}
+
+    map<int, bool> isPlayerActive;
+    map<int, int> numOfTheCardInPlayers;
+    vector<vector<Card>> _disposed_cards;
+    int theNumberOfRemainingCards;
+};
+
 class Player {
 public:
     Player(string name):
@@ -47,7 +59,7 @@ public:
     virtual void addCard(Card card) = 0;
     virtual void sortCards() = 0;
     virtual void printCards() const = 0;
-    virtual vector<Card> action(/* class SceneResource  */) = 0;
+    virtual vector<Card> action(Scene *Scene) = 0;
     virtual int  getCurrentCardNum() { return _currentCardNum; };
     virtual int  getMaxCardNum() { return _maxCardNum; }
     virtual string getName() { return _name; }
@@ -75,7 +87,7 @@ public:
         }
         cout << endl;
     }
-    vector<Card> action() {
+    vector<Card> action(Scene *Scene) {
         _currentCardNum = 0;
         return _cards;
     }
@@ -100,7 +112,7 @@ public:
         }
         cout << endl;
     }
-    vector<Card> action() {
+    vector<Card> action(Scene *Scene) {
         _currentCardNum = 0;
         return _cards;
     }
@@ -135,42 +147,43 @@ public:
     void start() {
         // 发牌
         dealCards();
-        play();
-    }
 
-    void dealCards() {
-        for (int j = 0; j < _players.size(); j++) {
-            while (_players[j]->getCurrentCardNum() < _players[j]->getMaxCardNum()) {
-                if (_cards.size() == 0)
-                    return;
-                // player add card.
-                _players[j]->addCard(_cards.back());
-                _cards.pop_back();
-            }
-            _players[j]->sortCards();
-        }
-    }
-    void play() {
-        // 输出卡牌
+        // 开始
         for (int i = 0; i < _players.size(); i++) {
             // get play cards and show with scene
-            vector<Card> cardsToShow = _players[i]->action();
+            vector<Card> cardsToShow = _players[i]->action(NULL);
             cout << "[" << _players[i]->getName() << "] ";
             for (const auto& card : cardsToShow) {
                 card.print();
             }
             cout << endl;
 
-            _disposed_cards.insert(_disposed_cards.end(), cardsToShow.begin(), cardsToShow.end());
+            disposeCards(cardsToShow);
         }
     }
+
+    void dealCards() {
+        for (int j = 0; j < _players.size(); j++) {
+            Player* player = _players[j];
+            while (player->getCurrentCardNum() < player->getMaxCardNum()) {
+                if (_cards.size() == 0)
+                    return;
+                Card card = takeTopCard();
+                player->addCard(card);
+            }
+            player->sortCards();
+        }
+    }
+
 private:
     const int CARD_NUM = 54;
     vector<Player*> _players;
     vector<Card> _cards;  // 抽牌牌堆
-    vector<Card> _disposed_cards;  // 出掉的牌牌堆
+    vector<vector<Card>>  _disposed_cards;  // 出掉的牌牌堆
     int _human_num;
     int _computer_num;
+    Scene scene;
+
     void initCards() {
         _disposed_cards.clear();
 
@@ -186,6 +199,26 @@ private:
     void shuffle(vector<Card>& cards) {
         srand((unsigned int)time(NULL));
         random_shuffle(cards.begin(), cards.end());
+    }
+
+    Card takeTopCard() {
+        Card card = _cards.back();
+        _cards.pop_back();
+        return card;
+    }
+
+    void disposeCards(vector<Card> cards) {
+        vector<Card> lastCards;
+        lastCards.insert(lastCards.end(), cards.begin(), cards.end());
+        _disposed_cards.push_back(lastCards);
+    }
+    void initScene() {
+        for (int i = 0; i < _players.size(); i++) {
+            scene.isPlayerActive[i] = true;
+            scene.numOfTheCardInPlayers[i] = 5;
+            scene._disposed_cards = _disposed_cards;
+            scene.theNumberOfRemainingCards = _cards.size();
+        }
     }
 };
 
