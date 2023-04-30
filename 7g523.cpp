@@ -39,21 +39,27 @@ private:
 
 class Player {
 public:
-    virtual void add_card(Card card) = 0;
-    virtual void sort_cards() = 0;
-    virtual void print_cards() const = 0;
+    Player(string name): _name(name) {}
+    virtual void addCard(Card card) = 0;
+    virtual void sortCards() = 0;
+    virtual void printCards() const = 0;
+    virtual int  getCurrentCardNum() { return currentCardNum; };
+
+    string _name;
+    int currentCardNum;
+
 };
 
 class HumanPlayer : public Player {
 public:
-    HumanPlayer(string name): _name(name) {}
-    void add_card(Card card) override {
+    HumanPlayer(string name): Player(name) {}
+    void addCard(Card card) override {
         _cards.push_back(card);
     }
-    void sort_cards() override {
+    void sortCards() override {
         sort(_cards.begin(), _cards.end(), [](Card& a, Card& b) { return a.get_value() < b.get_value(); });
     }
-    void print_cards() const override {
+    void printCards() const override {
         cout << "[" << _name << "] ";
         for (const auto& card : _cards) {
             card.print();
@@ -62,20 +68,19 @@ public:
         cout << endl;
     }
 private:
-    string _name;
     vector<Card> _cards;
 };
 
 class ComputerPlayer : public Player {
 public:
-    ComputerPlayer(string name): _name(name) {}
-    void add_card(Card card) override {
+    ComputerPlayer(string name): Player(name) {}
+    void addCard(Card card) override {
         _cards.push_back(card);
     }
-    void sort_cards() override {
+    void sortCards() override {
         sort(_cards.begin(), _cards.end(), [](Card& a, Card& b) { return a.get_value() < b.get_value(); });
     }
-    void print_cards() const override {
+    void printCards() const override {
         cout << "[" << _name << "] ";
         for (const auto& card : _cards) {
             cout << "** ";
@@ -83,7 +88,6 @@ public:
         cout << endl;
     }
 private:
-    string _name;
     vector<Card> _cards;
 };
 
@@ -91,7 +95,7 @@ class Game {
 public:
     Game(int human_num, int computer_num): _human_num(human_num), _computer_num(computer_num) {
         // 初始化扑克牌
-        init_cards();
+        initCards();
         // 初始化玩家列表
         for (int i = 0; i < human_num; i++) {
             _players.push_back(new HumanPlayer("Player " + to_string(i+1)));
@@ -108,31 +112,38 @@ public:
     }
     void start() {
         // 发牌
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < _players.size(); j++) {
-                _players[j]->add_card(_cards[i*_players.size() + j]);
-            }
-        }
+        dealCards();
 
         // 输出卡牌
         for (int i = 0; i < _players.size(); i++) {
-            _players[i]->sort_cards();
-            _players[i]->print_cards();
+            _players[i]->sortCards();
+            _players[i]->printCards();
+        }
+    }
+
+    void dealCards() {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < _players.size(); j++) {
+                _players[j]->addCard(_cards[i * _players.size() + j]);
+            }
         }
     }
 private:
-    const int CARD_NUM = 52;
+    const int CARD_NUM = 54;
     vector<Player*> _players;
-    vector<Card> _cards;  // 存储所有的扑克牌
+    vector<Card> _cards;  // 抽牌牌堆
+    vector<Card> _disposed_cards;  // 出掉的牌牌堆
     int _human_num;
     int _computer_num;
-    void init_cards() {
+    void initCards() {
+        _disposed_cards.clear();
+
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 13; j++) {
                 _cards.push_back(Card(i, j));
             }
         }
-	_cards.push_back(Card(2, 13)); // 小王
+	    _cards.push_back(Card(2, 13)); // 小王
         _cards.push_back(Card(3, 14)); // 大王
         shuffle(_cards);
     }
