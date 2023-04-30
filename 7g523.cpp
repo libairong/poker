@@ -39,15 +39,20 @@ private:
 
 class Player {
 public:
-    Player(string name): _name(name) {}
+    Player(string name):
+        _name(name),
+        _currentCardNum(0),
+        _maxCardNum(5) {}
+
     virtual void addCard(Card card) = 0;
     virtual void sortCards() = 0;
     virtual void printCards() const = 0;
-    virtual int  getCurrentCardNum() { return currentCardNum; };
+    virtual int  getCurrentCardNum() { return _currentCardNum; };
+    virtual int  getMaxCardNum() { return _maxCardNum; }
 
     string _name;
-    int currentCardNum;
-
+    int _currentCardNum;
+    int _maxCardNum;
 };
 
 class HumanPlayer : public Player {
@@ -55,6 +60,7 @@ public:
     HumanPlayer(string name): Player(name) {}
     void addCard(Card card) override {
         _cards.push_back(card);
+        _currentCardNum = _cards.size();
     }
     void sortCards() override {
         sort(_cards.begin(), _cards.end(), [](Card& a, Card& b) { return a.get_value() < b.get_value(); });
@@ -76,6 +82,7 @@ public:
     ComputerPlayer(string name): Player(name) {}
     void addCard(Card card) override {
         _cards.push_back(card);
+        _currentCardNum = _cards.size();
     }
     void sortCards() override {
         sort(_cards.begin(), _cards.end(), [](Card& a, Card& b) { return a.get_value() < b.get_value(); });
@@ -122,9 +129,13 @@ public:
     }
 
     void dealCards() {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < _players.size(); j++) {
-                _players[j]->addCard(_cards[i * _players.size() + j]);
+        for (int j = 0; j < _players.size(); j++) {
+            while (_players[j]->getCurrentCardNum() < _players[j]->getMaxCardNum()) {
+                if (_cards.size() == 0)
+                    return;
+                // player add card.
+                _players[j]->addCard(_cards.back());
+                _cards.pop_back();
             }
         }
     }
