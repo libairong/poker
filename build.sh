@@ -1,2 +1,2 @@
 #!/bin/bash
-g++ -o main 7g523.cpp
+g++ -std=c++20 -o main 7g523.cpp

@@ -8,13 +8,14 @@ using namespace std;
 
 const string CARD_COLOR[4] = {"♣", "♦", "♥", "♠"};
 const string CARD_VALUE[13] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+const int CARD_NUM = 54;
 
 // Card 类
 class Card {
 public:
     Card(int color, int value): _color(color), _value(value) {}
-    // 拷贝构造函数、拷贝赋值运算符、移动构造函数、移动赋值运算符同上文示例，这里不再重复
     Card& operator=(const Card&) = default;  // 显式默认拷贝运算符
+    bool operator==(const Card&) const = default;  // 显式默认判断相等运算符
     void print() const {
         if (_value == 13) {
             cout << CARD_COLOR[_color] << "小王";
@@ -39,22 +40,32 @@ private:
     int _value;
 };
 
+class PositionToCards {
+public:
+    PositionToCards(int position, vector<Card> cards):
+        position(position),
+        cards(cards) {}
+    int position;
+    vector<Card> cards;
+};
+
 class Scene {
 public:
     Scene() {}
 
     map<int, bool> isPlayerActive;
     map<int, int> numOfTheCardInPlayers;
-    vector<vector<Card>> _disposed_cards;
+    vector<PositionToCards>* _disposed_cards;
     int theNumberOfRemainingCards;
 };
 
 class Player {
 public:
-    Player(string name):
+    Player(string name, int position):
         _name(name),
         _currentCardNum(0),
-        _maxCardNum(5) {}
+        _maxCardNum(5),
+        _position(position) {}
 
     virtual void addCard(Card card) = 0;
     virtual void sortCards() = 0;
@@ -67,11 +78,12 @@ public:
     string _name;
     int _currentCardNum;
     int _maxCardNum;
+    int _position;
 };
 
 class HumanPlayer : public Player {
 public:
-    HumanPlayer(string name): Player(name) {}
+    HumanPlayer(string name, int position): Player(name, position) {}
     void addCard(Card card) override {
         _cards.push_back(card);
         _currentCardNum = _cards.size();
@@ -97,7 +109,7 @@ private:
 
 class ComputerPlayer : public Player {
 public:
-    ComputerPlayer(string name): Player(name) {}
+    ComputerPlayer(string name, int position): Player(name, position) {}
     void addCard(Card card) override {
         _cards.push_back(card);
         _currentCardNum = _cards.size();
@@ -112,15 +124,91 @@ public:
         }
         cout << endl;
     }
-    vector<Card> action(Scene *Scene) {
-        _currentCardNum = 0;
-        return _cards;
+
+    // 根据场上已有牌和上一个玩家的出牌出牌
+    vector<Card> action(Scene *scene) override {
+        // 玩家当前手牌
+        vector<Card> myCards = _cards;
+
+        // 场上已经出掉的牌
+        vector<PositionToCards>& disposedCards = *(scene->_disposed_cards);
+        vector<Card> alreadyDisposedCards;
+        for (const auto& cards : disposedCards) {
+            alreadyDisposedCards.insert(alreadyDisposedCards.end(), cards.cards.begin(), cards.cards.end());
+        }
+
+        // 获取上一个玩家出的牌
+        vector<Card> lastDisposedCards;
+        if (disposedCards.size() > 0) {
+            PositionToCards lastDisposedPositionToCards = disposedCards.back();
+            if (lastDisposedPositionToCards.position != _position) {
+                lastDisposedCards = lastDisposedPositionToCards.cards;
+            }
+        }
+
+        // 获取可以出的牌
+        vector<Card> validCards = getValidCards(myCards, lastDisposedCards, alreadyDisposedCards);
+
+        // 随机选择一张手牌
+        int idx = rand() % validCards.size();
+        Card card = validCards[idx];
+
+        // 移除手牌
+        myCards.erase(remove(myCards.begin(), myCards.end(), card), myCards.end());
+
+        // 更新场景信息
+        scene->numOfTheCardInPlayers[_position] = myCards.size();
+        _currentCardNum = myCards.size();
+        _cards = myCards;
+
+        // 返回出牌
+        return vector<Card>{card};
     }
+
 private:
     vector<Card> _cards;
-};
 
-// 应该有个场景资源管理类，Game只是流程管理
+    // 获取可以出的牌
+    vector<Card> getValidCards(vector<Card>& myCards, vector<Card>& lastDisposedCards, vector<Card>& alreadyDisposedCards) {
+        vector<Card> validCards;
+
+        if (lastDisposedCards.empty()) {
+            // 第一个出牌
+            for (int i = 0; i < myCards.size(); i++) {
+                validCards.push_back(myCards[i]);
+            }
+        } else {
+            // 不是第一个出牌
+            int lastValue = lastDisposedCards[0].get_value();
+            int lastCount = lastDisposedCards.size();
+
+            // 判断是否有比上一个玩家出的牌更大的牌能出
+            for (int i = 0; i < myCards.size(); i++) {
+                int currentValue = myCards[i].get_value();
+                if (currentValue > lastValue && count(myCards.begin(), myCards.end(), myCards[i]) >= lastCount) {
+                    validCards.push_back(myCards[i]);
+                }
+            }
+
+            // 如果没有比上一个玩家出的牌更大的牌能出，则选择任意符合规则的牌
+            if (validCards.empty()) {
+                for (int i = 0; i < myCards.size(); i++) {
+                    int currentValue = myCards[i].get_value();
+                    if (count(myCards.begin(), myCards.end(), myCards[i]) >= lastCount) {
+                        validCards.push_back(myCards[i]);
+                    }
+                }
+            }
+        }
+
+        // 如果没有符合规则的牌，则出一张最小的牌
+        if (validCards.empty()) {
+            validCards.push_back(*min_element(myCards.begin(), myCards.end(), [](Card& a, Card& b) { return a.get_value() < b.get_value(); }));
+        }
+
+        return validCards;
+    }
+};
 
 /**
  * 流程管理
@@ -131,11 +219,12 @@ public:
         // 初始化扑克牌
         initCards();
         // 初始化玩家列表
+        int currentPlayerIndex = 0;
         for (int i = 0; i < human_num; i++) {
-            _players.push_back(new HumanPlayer("Player " + to_string(i+1)));
+            _players.push_back(new HumanPlayer("Player " + to_string(i+1), currentPlayerIndex++));
         }
         for (int i = 0; i < computer_num; i++) {
-            _players.push_back(new ComputerPlayer("Computer " + to_string(i+1)));
+            _players.push_back(new ComputerPlayer("Computer " + to_string(i+1), currentPlayerIndex++));
         }
     }
 
@@ -151,14 +240,14 @@ public:
         // 开始
         for (int i = 0; i < _players.size(); i++) {
             // get play cards and show with scene
-            vector<Card> cardsToShow = _players[i]->action(NULL);
+            vector<Card> cardsToShow = _players[i]->action(&scene);
             cout << "[" << _players[i]->getName() << "] ";
             for (const auto& card : cardsToShow) {
                 card.print();
             }
             cout << endl;
 
-            disposeCards(cardsToShow);
+            disposeCards(i, cardsToShow);
         }
     }
 
@@ -176,10 +265,9 @@ public:
     }
 
 private:
-    const int CARD_NUM = 54;
     vector<Player*> _players;
     vector<Card> _cards;  // 抽牌牌堆
-    vector<vector<Card>>  _disposed_cards;  // 出掉的牌牌堆
+    vector<PositionToCards>  _disposed_cards;  // 出掉的牌牌堆
     int _human_num;
     int _computer_num;
     Scene scene;
@@ -207,16 +295,17 @@ private:
         return card;
     }
 
-    void disposeCards(vector<Card> cards) {
+    void disposeCards(int playerPosition, vector<Card> cards) {
         vector<Card> lastCards;
         lastCards.insert(lastCards.end(), cards.begin(), cards.end());
-        _disposed_cards.push_back(lastCards);
+        PositionToCards positionToCard(playerPosition, lastCards);
+        _disposed_cards.push_back(positionToCard);
     }
     void initScene() {
         for (int i = 0; i < _players.size(); i++) {
             scene.isPlayerActive[i] = true;
             scene.numOfTheCardInPlayers[i] = 5;
-            scene._disposed_cards = _disposed_cards;
+            scene._disposed_cards = &_disposed_cards;
             scene.theNumberOfRemainingCards = _cards.size();
         }
     }
