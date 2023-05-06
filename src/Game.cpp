@@ -1,15 +1,41 @@
 #include "Game.hpp"
+#include <cstdlib>
+#include <ctime>
 
 Game::Game(int human_num, int computer_num): _human_num(human_num), _computer_num(computer_num) {
     // 初始化扑克牌
     initCards();
-    // 初始化玩家列表
-    int currentPlayerIndex = 0;
-    for (int i = 0; i < human_num; i++) {
-        _players.push_back(new HumanPlayer("Player " + to_string(i+1), currentPlayerIndex++));
-    }
-    for (int i = 0; i < computer_num; i++) {
-        _players.push_back(new ComputerPlayer("Computer " + to_string(i+1), currentPlayerIndex++));
+    /**
+     * 初始化玩家列表
+     * 通过人类玩家和电脑玩家的比例计算的概率来分配玩家座次。
+     */
+    int tmpComputerNum = computer_num;
+    int tmpHumanNum = human_num;
+
+    srand(time(0));
+
+    for (int currentPlayerIndex = 0; currentPlayerIndex < computer_num + human_num; currentPlayerIndex++) {
+        if (tmpComputerNum == 0) {
+            _players.push_back(new HumanPlayer("Player " + to_string(human_num - tmpHumanNum), currentPlayerIndex));
+            tmpHumanNum--;
+            continue;
+        }
+
+        if (tmpHumanNum == 0) {
+            _players.push_back(new ComputerPlayer("Computer " + to_string(computer_num - tmpComputerNum), currentPlayerIndex));
+            tmpComputerNum--;
+            continue;
+        }
+
+        int randNum = rand() % tmpComputerNum + tmpHumanNum;  // randNum: 0 ~ playerNum - 1;
+        bool isComputer = (randNum < tmpComputerNum) ? true : false;
+        if (isComputer) {
+            _players.push_back(new ComputerPlayer("Computer " + to_string(computer_num - tmpComputerNum), currentPlayerIndex));
+            tmpComputerNum--;
+        } else {
+            _players.push_back(new HumanPlayer("Player " + to_string(human_num - tmpHumanNum), currentPlayerIndex));
+            tmpHumanNum--;
+        }
     }
 
     initScene();
@@ -33,6 +59,7 @@ void Game::start() {
         for (const auto& card : cardsToShow) {
             card.print();
         }
+        scene.numOfTheCardInPlayers[_players[i]->getPosition()] = _players[i]->getCurrentCardNum();
         cout << endl;
 
         disposeCards(i, cardsToShow);
@@ -55,13 +82,14 @@ void Game::dealCards() {
 void Game::initCards() {
     _disposed_cards.clear();
 
+    // 四种花色
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 13; j++) {
             _cards.push_back(Card(i, j));
         }
     }
-    _cards.push_back(Card(2, 13)); // 小王
-    _cards.push_back(Card(3, 14)); // 大王
+    _cards.push_back(Card(2, LITTLE_JOKER_VALUE)); // 小王
+    _cards.push_back(Card(3, BIG_JOKER_VALUE)); // 大王
     shuffle(_cards);
 }
 void Game::shuffle(vector<Card>& cards) {

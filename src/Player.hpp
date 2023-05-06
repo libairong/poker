@@ -23,6 +23,7 @@ public:
     virtual int  getCurrentCardNum() { return _currentCardNum; };
     virtual int  getMaxCardNum() { return _maxCardNum; }
     virtual string getName() { return _name; }
+    virtual int getPosition() { return _position; }
 
     string _name;
     int _currentCardNum;

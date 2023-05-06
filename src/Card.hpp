@@ -5,8 +5,10 @@
 
 using namespace std;
 
-const string CARD_COLOR[4] = {"♣", "♦", "♥", "♠"};
-const string CARD_VALUE[13] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+const string CARD_COLOR[4]    =  {"♦", "♣", "♥", "♠"};
+const string CARD_VALUE[15]   = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "big joker", "little joker"};
+const int    BIG_JOKER_VALUE  = 14;
+const int LITTLE_JOKER_VALUE  = 13;
 
 /**
  * 扑克牌类
@@ -14,7 +16,7 @@ const string CARD_VALUE[13] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10"
 class Card {
 public:
     enum Suit {
-        CLUB, DIAMOND, HEART, SPADE
+        DIAMOND, CLUB, HEART, SPADE  // 街砖、梅花、红心、葵扇
     };
 
     Card() {}
@@ -24,6 +26,8 @@ public:
     void print() const;
     string toString() const;
     int get_value() const;
+    int getSuit() const;
+    int compare(const Card& b);
     void swap(Card& other);
     friend void swap(Card& a, Card& b);
 private:

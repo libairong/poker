@@ -1,5 +1,7 @@
 #include "Player.hpp"
 
+#define DP printf("[%s] %s, %d \n", __FILE__, __func__, __LINE__);
+
 ComputerPlayer::ComputerPlayer(string name, int position): Player(name, position) {}
 void ComputerPlayer::addCard(Card card) {
     _cards.push_back(card);
@@ -11,7 +13,8 @@ void ComputerPlayer::sortCards() {
 void ComputerPlayer::printCards() const {
     cout << "[" << _name << "] ";
     for (const auto& card : _cards) {
-        cout << "** ";
+        card.print();
+        cout << " ";
     }
     cout << endl;
 }
@@ -40,15 +43,18 @@ vector<Card> ComputerPlayer::action(Scene *scene) {
     // 获取可以出的牌
     vector<Card> validCards = getValidCards(myCards, lastDisposedCards, alreadyDisposedCards);
 
-    // 随机选择一张手牌
+    // 要不起
+    if (validCards.size() == 0)
+        return validCards;
+
+    // 这里先随机选择一张手牌
     int idx = rand() % validCards.size();
     Card card = validCards[idx];
 
     // 移除手牌
     myCards.erase(remove(myCards.begin(), myCards.end(), card), myCards.end());
 
-    // 更新场景信息
-    scene->numOfTheCardInPlayers[_position] = myCards.size();
+    // 更新玩家手牌数
     _currentCardNum = myCards.size();
     _cards = myCards;
 
@@ -144,13 +150,13 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
         int lastValue = lastDisposedCards[0].get_value();
         int lastCount = lastDisposedCards.size();
 
-        // 判断上一个玩家出的牌的类型
+        // 判断上一个玩家出的牌的类型, 这里涉及到玩法，可以专门定义一个类，做出牌判断
         bool isSingle = false, isPair = false, isThree = false, isBomb = false;
         if (lastCount == 1) {
             isSingle = true;
         } else if (lastCount == 2 && lastDisposedCards[0].get_value() == lastDisposedCards[1].get_value()) {
             isPair = true;
-        } else if (lastCount == 3 && lastDisposedCards[0].get_value() == lastDisposedCards[1].get_value() 
+        } else if (lastCount == 3 && lastDisposedCards[0].get_value() == lastDisposedCards[1].get_value()
                 && lastDisposedCards[1].get_value() == lastDisposedCards[2].get_value()) {
             isThree = true;
         } else if (lastCount == 4 && lastDisposedCards[0].get_value() == lastDisposedCards[1].get_value()
@@ -252,6 +258,8 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
     for (int i = 0; i < lastDisposedCards.size(); i++) {
         cardString += lastDisposedCards[i].toString();
     }
+
+    //  这里true 部分应该放在函数开头，不用再计算了
     if (cache.count(cardString) > 0) {
         return cache[cardString];
     } else {
