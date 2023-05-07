@@ -21,7 +21,7 @@ void HumanPlayer::printCards() const {
     cout << endl;
 }
 
-vector<Card> HumanPlayer::action(Scene *Scene) {
+vector<Card> HumanPlayer::action(const Scene *Scene) {
     _currentCardNum = 0;
     return _cards;
 }

@@ -3,6 +3,9 @@
 #include <ctime>
 
 Game::Game(int human_num, int computer_num): _human_num(human_num), _computer_num(computer_num) {
+    // 初始化规则参考类
+    gameRule = make_shared<GameRule7g523>();
+
     // 初始化扑克牌
     initCards();
     /**
@@ -16,13 +19,17 @@ Game::Game(int human_num, int computer_num): _human_num(human_num), _computer_nu
 
     for (int currentPlayerIndex = 0; currentPlayerIndex < computer_num + human_num; currentPlayerIndex++) {
         if (tmpComputerNum == 0) {
-            _players.push_back(new HumanPlayer("Player " + to_string(human_num - tmpHumanNum), currentPlayerIndex));
+            HumanPlayer* humanPlayer = new HumanPlayer("Player " + to_string(human_num - tmpHumanNum), currentPlayerIndex);
+            humanPlayer->setGameRule(gameRule);
+            _players.push_back(humanPlayer);
             tmpHumanNum--;
             continue;
         }
 
         if (tmpHumanNum == 0) {
-            _players.push_back(new ComputerPlayer("Computer " + to_string(computer_num - tmpComputerNum), currentPlayerIndex));
+            ComputerPlayer* computerPlayer = new ComputerPlayer("Computer " + to_string(computer_num - tmpComputerNum), currentPlayerIndex);
+            computerPlayer->setGameRule(gameRule);
+            _players.push_back(computerPlayer);
             tmpComputerNum--;
             continue;
         }
@@ -30,10 +37,14 @@ Game::Game(int human_num, int computer_num): _human_num(human_num), _computer_nu
         int randNum = rand() % tmpComputerNum + tmpHumanNum;  // randNum: 0 ~ playerNum - 1;
         bool isComputer = (randNum < tmpComputerNum) ? true : false;
         if (isComputer) {
-            _players.push_back(new ComputerPlayer("Computer " + to_string(computer_num - tmpComputerNum), currentPlayerIndex));
+            ComputerPlayer* computerPlayer = new ComputerPlayer("Computer " + to_string(computer_num - tmpComputerNum), currentPlayerIndex);
+            computerPlayer->setGameRule(gameRule);
+            _players.push_back(computerPlayer);
             tmpComputerNum--;
         } else {
-            _players.push_back(new HumanPlayer("Player " + to_string(human_num - tmpHumanNum), currentPlayerIndex));
+            HumanPlayer* humanPlayer = new HumanPlayer("Player " + to_string(human_num - tmpHumanNum), currentPlayerIndex);
+            humanPlayer->setGameRule(gameRule);
+            _players.push_back(humanPlayer);
             tmpHumanNum--;
         }
     }
@@ -52,7 +63,9 @@ void Game::start() {
     dealCards();
 
     // 开始
-    for (int i = 0; i < _players.size(); i++) {
+    for (int i = 0; i < (int)_players.size(); i++) {
+        // 摊牌
+        _players[i]->printCards();
         // get play cards and show with scene
         vector<Card> cardsToShow = _players[i]->action(&scene);
         cout << "[" << _players[i]->getName() << "] ";
@@ -62,12 +75,17 @@ void Game::start() {
         scene.numOfTheCardInPlayers[_players[i]->getPosition()] = _players[i]->getCurrentCardNum();
         cout << endl;
 
-        disposeCards(i, cardsToShow);
+        if (cardsToShow.size() != 0)
+            disposeCards(i, cardsToShow);
     }
 }
 
+// 增加测试模式，给指定玩家发特定的牌
+// #define DEBUG
+
+#ifndef DEBUG
 void Game::dealCards() {
-    for (int j = 0; j < _players.size(); j++) {
+    for (int j = 0; j < (int)_players.size(); j++) {
         Player* player = _players[j];
         while (player->getCurrentCardNum() < player->getMaxCardNum()) {
             if (_cards.size() == 0)
@@ -78,6 +96,30 @@ void Game::dealCards() {
         player->sortCards();
     }
 }
+#else
+void Game::dealCards() {
+        Card card(1, 4);
+        _players[0]->addCard(card);
+        Card card1(1, 5);
+        _players[1]->addCard(card1);
+        Card card2(1, 6);
+        _players[2]->addCard(card2);
+        Card card3(1, 7);
+        _players[3]->addCard(card3);
+        Card card4(1, 14);
+        _players[4]->addCard(card4);
+        Card card5(1, 8);
+        _players[5]->addCard(card5);
+        Card card6(1, 9);
+        _players[6]->addCard(card6);
+        Card card7(1, 13);
+        _players[7]->addCard(card7);
+        Card card8(1, 2);
+        _players[8]->addCard(card8);
+        Card card9(1, 1);
+        _players[9]->addCard(card9);
+}
+#endif
 
 void Game::initCards() {
     _disposed_cards.clear();
@@ -110,7 +152,7 @@ void Game::disposeCards(int playerPosition, vector<Card> cards) {
     _disposed_cards.push_back(positionToCard);
 }
 void Game::initScene() {
-    for (int i = 0; i < _players.size(); i++) {
+    for (int i = 0; i < (int)_players.size(); i++) {
         scene.isPlayerActive[i] = true;
         scene.numOfTheCardInPlayers[i] = 5;
         scene._disposed_cards = &_disposed_cards;

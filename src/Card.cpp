@@ -8,9 +8,9 @@ Card::Card(int color, int value) : _color(color), _value(value), _suit(static_ca
 
 void Card::print() const {
     if (_value == LITTLE_JOKER_VALUE || _value == BIG_JOKER_VALUE)
-        std::cout << CARD_VALUE[_value];
+        std::cout << "[" << CARD_VALUE[_value] << "]";
     else
-        std::cout << CARD_COLOR[_color] << CARD_VALUE[_value];
+        std::cout << "[" << CARD_COLOR[_color] << CARD_VALUE[_value] << "]";
 }
 
 string Card::toString() const {

@@ -15,9 +15,23 @@ TARGET := $(BINDIR)/card_game
 # 创建目标目录
 MKDIR_P = mkdir -p
 
-.PHONY: all clean
+# Debug模式CFLAGS
+CFLAGS_DEBUG = -g -ggdb
+CXXFLAGS_DEBUG = $(CXXFLAGS) $(CFLAGS_DEBUG)
 
-all: | $(BINDIR) $(OBJDIR) $(TARGET)
+# Release模式CFLAGS
+CFLAGS_RELEASE =
+CXXFLAGS_RELEASE = $(CXXFLAGS) $(CFLAGS_RELEASE)
+
+.PHONY: all clean debug release
+
+all: release
+
+release: CXXFLAGS := $(CXXFLAGS_RELEASE)
+release: $(TARGET)
+
+debug: CXXFLAGS := $(CXXFLAGS_DEBUG)
+debug: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $^ -o $@

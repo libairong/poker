@@ -6,7 +6,7 @@
 using namespace std;
 
 const string CARD_COLOR[4]    =  {"♦", "♣", "♥", "♠"};
-const string CARD_VALUE[15]   = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "big joker", "little joker"};
+const string CARD_VALUE[15]   = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "little joker", "big joker"};
 const int    BIG_JOKER_VALUE  = 14;
 const int LITTLE_JOKER_VALUE  = 13;
 

@@ -20,7 +20,7 @@ void ComputerPlayer::printCards() const {
 }
 
 // 根据场上已有牌和上一个玩家的出牌出牌
-vector<Card> ComputerPlayer::action(Scene *scene) {
+vector<Card> ComputerPlayer::action(const Scene *scene) {
     // 玩家当前手牌
     vector<Card> myCards = _cards;
 
@@ -41,12 +41,13 @@ vector<Card> ComputerPlayer::action(Scene *scene) {
     }
 
     // 获取可以出的牌
-    vector<Card> validCards = getValidCards(myCards, lastDisposedCards, alreadyDisposedCards);
+    vector<Card> validCards = getValidCards(myCards, lastDisposedCards);
 
-    // 要不起
+    // 1, 要不起
     if (validCards.size() == 0)
         return validCards;
 
+    // 2, 出牌，后续根据当前场上的牌和已经打出去的牌判断
     // 这里先随机选择一张手牌
     int idx = rand() % validCards.size();
     Card card = validCards[idx];
@@ -65,9 +66,10 @@ vector<Card> ComputerPlayer::action(Scene *scene) {
 // 查找单牌
 vector<Card> ComputerPlayer::searchSingleCards(const vector<Card>& myCards, int lastValue) {
     vector<Card> validCards;
-    for (int i = 0; i < myCards.size(); i++) {
+    for (int i = 0; i < (int)myCards.size(); i++) {
         int currentValue = myCards[i].get_value();
-        if (currentValue > lastValue) {
+        // 这里替换成规则判断
+        if (gameRule->cardCompare(currentValue, lastValue) > 0) {
             validCards.push_back(myCards[i]);
         }
     }
@@ -113,7 +115,7 @@ vector<Card> ComputerPlayer::searchMultiSameValueCards(const vector<Card>& myCar
 // 查找顺子、连对、飞机
 vector<Card> ComputerPlayer::searchSequenceCards(const vector<Card>& myCards, int lastValue, int len, int cntSameValue) {
     vector<Card> validCards;
-    if (myCards.size() < len || len < 5 || cntSameValue <= 1 || lastValue < 3) {
+    if ((int)myCards.size() < len || len < 5 || cntSameValue <= 1 || lastValue < 3) {
         return validCards;
     }
     int minValue = lastValue + 1;
@@ -136,13 +138,13 @@ vector<Card> ComputerPlayer::searchSequenceCards(const vector<Card>& myCards, in
     return validCards;
 }
 
-vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards,
-        const vector<Card>& alreadyDisposedCards) {
+// 这里根据规则类来判断
+vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards) {
     vector<Card> validCards;
 
     if (lastDisposedCards.empty()) {
         // 第一个出牌
-        for (int i = 0; i < myCards.size(); i++) {
+        for (int i = 0; i < (int)myCards.size(); i++) {
             validCards.push_back(myCards[i]);
         }
     } else {
@@ -255,7 +257,7 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
 
     // 缓存查找的结果
     string cardString = "";
-    for (int i = 0; i < lastDisposedCards.size(); i++) {
+    for (int i = 0; i < (int)lastDisposedCards.size(); i++) {
         cardString += lastDisposedCards[i].toString();
     }
 

@@ -10,9 +10,9 @@
 class Scene {
 public:
     Scene() = default;
-    std::map<int, bool> isPlayerActive;
-    std::map<int, int> numOfTheCardInPlayers;
-    std::vector<PositionToCards>* _disposed_cards;
+    map<int, bool> isPlayerActive;
+    map<int, int> numOfTheCardInPlayers;
+    vector<PositionToCards>* _disposed_cards;
     int theNumberOfRemainingCards;
 };
 

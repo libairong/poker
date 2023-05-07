@@ -4,9 +4,11 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <memory>
 #include "Card.hpp"
 #include "Player.hpp"
 #include "Scene.hpp"
+#include "GameRule.hpp"
 
 using namespace std;
 /**
@@ -24,6 +26,7 @@ private:
     int _human_num;
     int _computer_num;
     Scene scene;
+    // 这列应该多个游戏规则类，并将指针给到各个玩家
 
     void initCards();
     void shuffle(vector<Card>& cards);
@@ -31,5 +34,6 @@ private:
     void disposeCards(int playerPosition, vector<Card> cards);
     void dealCards();
     void initScene();
+    shared_ptr<GameRule> gameRule;
 };
 
