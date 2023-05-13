@@ -1,6 +1,10 @@
 #include "Game.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <ctime>
+#include <cstring>
 
 Game::Game(int human_num, int computer_num): _human_num(human_num), _computer_num(computer_num) {
     // 初始化规则参考类
@@ -19,7 +23,7 @@ Game::Game(int human_num, int computer_num): _human_num(human_num), _computer_nu
 
     for (int currentPlayerIndex = 0; currentPlayerIndex < computer_num + human_num; currentPlayerIndex++) {
         if (tmpComputerNum == 0) {
-            HumanPlayer* humanPlayer = new HumanPlayer("Player " + to_string(human_num - tmpHumanNum), currentPlayerIndex);
+            HumanPlayer* humanPlayer = new HumanPlayer("Player" + to_string(human_num - tmpHumanNum), currentPlayerIndex);
             humanPlayer->setGameRule(gameRule);
             _players.push_back(humanPlayer);
             tmpHumanNum--;
@@ -27,7 +31,7 @@ Game::Game(int human_num, int computer_num): _human_num(human_num), _computer_nu
         }
 
         if (tmpHumanNum == 0) {
-            ComputerPlayer* computerPlayer = new ComputerPlayer("Computer " + to_string(computer_num - tmpComputerNum), currentPlayerIndex);
+            ComputerPlayer* computerPlayer = new ComputerPlayer("Computer" + to_string(computer_num - tmpComputerNum), currentPlayerIndex);
             computerPlayer->setGameRule(gameRule);
             _players.push_back(computerPlayer);
             tmpComputerNum--;
@@ -81,7 +85,7 @@ void Game::start() {
 }
 
 // 增加测试模式，给指定玩家发特定的牌
-// #define DEBUG
+#define DEBUG
 
 #ifndef DEBUG
 void Game::dealCards() {
@@ -98,26 +102,90 @@ void Game::dealCards() {
 }
 #else
 void Game::dealCards() {
-        Card card(1, 4);
-        _players[0]->addCard(card);
-        Card card1(1, 5);
-        _players[1]->addCard(card1);
-        Card card2(1, 6);
-        _players[2]->addCard(card2);
-        Card card3(1, 7);
-        _players[3]->addCard(card3);
-        Card card4(1, 14);
-        _players[4]->addCard(card4);
-        Card card5(1, 8);
-        _players[5]->addCard(card5);
-        Card card6(1, 9);
-        _players[6]->addCard(card6);
-        Card card7(1, 13);
-        _players[7]->addCard(card7);
-        Card card8(1, 2);
-        _players[8]->addCard(card8);
-        Card card9(1, 1);
-        _players[9]->addCard(card9);
+    // Deal cards by config.txt
+    string filename="debug/config.txt";
+    ifstream fin(filename.c_str());
+    if (!fin.is_open()) {
+        cerr << "Error: failed to open file " << filename << endl;
+        exit(0);
+    }
+
+    string strline;
+    int currentLine = 0;
+    while (getline(fin, strline)) {
+        // cout << strline << endl;
+        size_t pos = strline.find_first_of("[]"); // 找到第一个 '[' 或 ']' 的位置
+        while (pos != string::npos) {
+            strline.replace(pos, 1, "");             // 替换当前位置的字符为 ''
+            pos = strline.find_first_of("[]", pos + 1);  // 继续查找下一个 '[' 或 ']' 的位置
+        }
+        // split
+        istringstream iss(strline);
+        vector<string> tokens;
+        string token;
+        char delimiter = ' ';
+        while (getline(iss, token, delimiter)) {
+            tokens.push_back(token);
+        }
+
+        int currentColumn = 0;
+        for (const auto& item : tokens) {
+            // cout << "item: " << item << " " << endl;
+            // cout << item << endl;
+            if (currentColumn == 0) {
+                currentColumn++;
+                continue;
+            }
+
+            int suitValue = 100;
+            int valueOffset = 0;
+            if (!memcmp("♠", item.c_str(), strlen("♠"))) {
+                suitValue = 3;
+                valueOffset = strlen("♠");
+            } else if (!memcmp("♥", item.c_str(), strlen("♥"))) {
+                suitValue = 2;
+                valueOffset = strlen("♠");
+            } else if (!memcmp("♣", item.c_str(), strlen("♣"))) {
+                suitValue = 1;
+                valueOffset = strlen("♠");
+            } else if (!memcmp("♦", item.c_str(), strlen("♦"))) {
+                suitValue = 0;
+                valueOffset = strlen("♠");
+            } else if (!memcmp("L", item.c_str(), 1)) {
+                suitValue = -1;  // Not use.
+                valueOffset = 1;
+            } else if (!memcmp("B", item.c_str(), 1)) {
+                suitValue = -2;  // Not use.
+                valueOffset = 1;
+            }
+
+            // cout << "col: " << currentColumn << " item: " << item << " suit: " << suitValue << endl;
+            int cardValue;
+            string value(item.c_str() + valueOffset);
+            if (value == "A") {
+                cardValue = 0;
+            } else if (value == "J" && suitValue != -1 && suitValue != -2) {
+                cardValue = 10;
+            } else if (value == "Q") {
+                cardValue = 11;
+            } else if (value == "K") {
+                cardValue = 12;
+            } else if (value == "J" && suitValue == -1) {
+                cardValue = 13;
+            } else if (value == "J" && suitValue == -2) {
+                cardValue = 14;
+            } else {
+                cardValue = stoi(value) - 1;
+            }
+
+            // Deal card to player.
+            _players[currentLine]->addCard(Card(suitValue, cardValue));
+            currentColumn++;
+        }
+
+        currentLine++;
+    }
+    fin.close();
 }
 #endif
 
