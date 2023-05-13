@@ -19,6 +19,41 @@ GameRule7g523::GameRule7g523() {
     cardRankRule.insert({0,  8});
 }
 
-int GameRule7g523::cardCompare(int valueA, int valueB) {
-    return cardRankRule[valueA] > cardRankRule[valueB] ? 1 : -1;
+bool GameRule7g523::cardCompare(const Card& a, const Card& b) {
+    if (a.get_value() == b.get_value())
+        return a.getSuit() > b.getSuit();
+    return cardRankRule[a.get_value()] > cardRankRule[b.get_value()];
 }
+
+bool GameRule7g523::cardValueCompare(int valueA, int valueB) {
+    return cardRankRule[valueA] > cardRankRule[valueB];
+}
+
+CombinateType GameRule7g523::cardsType(const vector<Card>& cards) {
+    int lastCount = cards.size();
+    // 判断上一个玩家出的牌的类型, 这里涉及到玩法，可以专门定义一个类，做出牌判断
+    if (lastCount == 1) {
+        return CombinateType::SINGLE;
+    } else if (lastCount == 2) {
+        return CombinateType::PAIR;
+    } else if (lastCount == 3) {
+        return CombinateType::THREE;
+    } else if (lastCount == 4) {
+        return CombinateType::FOUR;
+    } else if (lastCount == 5 && cards[4].get_value() - cards[3].get_value() == 1
+                              && cards[3].get_value() - cards[2].get_value() == 1
+                              && cards[2].get_value() - cards[1].get_value() == 1
+                              && cards[1].get_value() - cards[0].get_value() == 1) {
+        return CombinateType::STRAIGHT;
+    } else if (lastCount == 5 && cards[4].getSuit() == cards[3].getSuit()
+                              && cards[3].getSuit() == cards[2].getSuit()
+                              && cards[2].getSuit() == cards[1].getSuit()
+                              && cards[1].getSuit() == cards[0].getSuit()) {
+        return CombinateType::SINGLE_SUIT;
+    } else {
+        // useless
+        return CombinateType::SINGLE_SUIT;
+    }
+}
+
+

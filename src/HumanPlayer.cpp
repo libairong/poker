@@ -9,7 +9,7 @@ void HumanPlayer::addCard(Card card) {
 }
 
 void HumanPlayer::sortCards() {
-    sort(_cards.begin(), _cards.end(), [](Card& a, Card& b) { return a.get_value() < b.get_value(); });
+    sort(_cards.begin(), _cards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
 }
 
 void HumanPlayer::printCards() const {

@@ -23,15 +23,34 @@ int Card::get_value() const {
 }
 
 // 返回-1表示a 小于 b，返回1 表示a 大于b
-int Card::compare(const Card& b) {
-    if (_value == b.get_value()) {
-        return _suit > b.getSuit() ? 1 : -1;
+int Card::compare(const Card& a, const Card& b) {
+    if (a.get_value() == b.get_value()) {
+        return a.getSuit() > b.getSuit() ? 1 : -1;
     } else {
-
-        return _value > b.get_value() ? 1 : -1;
+        return a.get_value() > b.get_value() ? 1 : -1;
     }
 }
 
+void Card::getSameValueCards(const vector<Card>* input, int theSameValue, vector<Card>* output) {
+    for (int i = 0; i < (int)input->size(); i++) {
+        if (input->at(i).get_value() == theSameValue) {
+            output->push_back(input->at(i));
+        }
+    }
+}
+
+int Card::countSameValueCard(const vector<Card>& myCards, int value) {
+    if (myCards.empty())
+        return 0;
+
+    int count = 0;
+    for (int i = 0; i < (int)myCards.size(); i++) {
+        if (myCards[i].get_value() == value)
+            count++;
+    }
+
+    return count;
+}
 int Card::getSuit() const {
     return _suit;
 }

@@ -3,12 +3,13 @@
 #define DP printf("[%s] %s, %d \n", __FILE__, __func__, __LINE__);
 
 ComputerPlayer::ComputerPlayer(string name, int position): Player(name, position) {}
+
 void ComputerPlayer::addCard(Card card) {
     _cards.push_back(card);
     _currentCardNum = _cards.size();
 }
 void ComputerPlayer::sortCards() {
-    sort(_cards.begin(), _cards.end(), [](Card& a, Card& b) { return a.get_value() < b.get_value(); });
+    sort(_cards.begin(), _cards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
 }
 void ComputerPlayer::printCards() const {
     cout << "[" << _name << "] ";
@@ -40,7 +41,7 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
         }
     }
 
-    // 获取可以出的牌
+    // 获取可以出的牌，不会影响到手牌
     vector<Card> validCards = getValidCards(myCards, lastDisposedCards);
 
     // 1, 要不起
@@ -52,7 +53,7 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
     int idx = rand() % validCards.size();
     Card card = validCards[idx];
 
-    // 移除手牌
+    // 这里循环移除要出的手牌
     myCards.erase(remove(myCards.begin(), myCards.end(), card), myCards.end());
 
     // 更新玩家手牌数
@@ -64,51 +65,48 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
 }
 
 // 查找单牌
-vector<Card> ComputerPlayer::searchSingleCards(const vector<Card>& myCards, int lastValue) {
+vector<Card> ComputerPlayer::searchSingleCards(const vector<Card>& myCards, const Card& lastCard) {
     vector<Card> validCards;
+
+    if (!gameRule->cardCompare(myCards[myCards.size() - 1], lastCard))
+        return validCards;
+
     for (int i = 0; i < (int)myCards.size(); i++) {
-        int currentValue = myCards[i].get_value();
         // 这里替换成规则判断
-        if (gameRule->cardCompare(currentValue, lastValue) > 0) {
+        if (gameRule->cardCompare(myCards[i], lastCard)) {
             validCards.push_back(myCards[i]);
         }
     }
     return validCards;
 }
 
-// 查找对子、三张、炸弹
-vector<Card> ComputerPlayer::searchMultiSameValueCards(const vector<Card>& myCards, int lastValue, int cntSameValue) {
+// 查找对子、三张、四张
+vector<Card> ComputerPlayer::searchMultiSameValueCards(const vector<Card>& myCards, const vector<Card>& lastCards, int cntSameValue) {
     vector<Card> validCards;
-    if (cntSameValue <= 1) {
+    if ((int)myCards.size() < cntSameValue || !gameRule->cardCompare(myCards[myCards.size() - 1], lastCards[0])) {
         return validCards;
     }
-    int cntCards = count(myCards.begin(), myCards.end(), Card(lastValue, Card::SPADE));
-    if (cntCards >= cntSameValue) {
-        for (int i = 0; i < cntSameValue; i++) {
-            validCards.push_back(Card(lastValue, Card::SPADE));
-        }
-    } else if (cntCards + count(myCards.begin(), myCards.end(), Card(lastValue, Card::HEART)) >= cntSameValue) {
-        for (int i = 0; i < cntSameValue-cntCards; i++) {
-            validCards.push_back(Card(lastValue, Card::SPADE));
-        }
-        for (int i = 0; i < cntCards; i++) {
-            validCards.push_back(Card(lastValue, Card::HEART));
-        }
-    } else if (cntCards + count(myCards.begin(), myCards.end(), Card(lastValue, Card::CLUB)) >= cntSameValue) {
-        for (int i = 0; i < cntSameValue-cntCards; i++) {
-            validCards.push_back(Card(lastValue, Card::SPADE));
-        }
-        for (int i = 0; i < cntCards; i++) {
-            validCards.push_back(Card(lastValue, Card::CLUB));
-        }
-    } else if (cntCards + count(myCards.begin(), myCards.end(), Card(lastValue, Card::DIAMOND)) >= cntSameValue) {
-        for (int i = 0; i < cntSameValue-cntCards; i++) {
-            validCards.push_back(Card(lastValue, Card::SPADE));
-        }
-        for (int i = 0; i < cntCards; i++) {
-            validCards.push_back(Card(lastValue, Card::DIAMOND));
+
+    for (int i = 0; i < (int)myCards.size(); i++) {
+        // 首先，牌数值要大于或等于lastCards
+        if (!gameRule->cardValueCompare(myCards[i].get_value(), lastCards[0].get_value())
+            || myCards[i].get_value() != lastCards[0].get_value())
+            continue;
+
+        if (Card::countSameValueCard(myCards, myCards[i].get_value()) >= cntSameValue) {
+            if (cntSameValue == 2 && myCards[i].get_value() == lastCards[i].get_value()) {
+                // 同数值对子
+                Card::getSameValueCards(&myCards, myCards[i].get_value(), &validCards);
+                if (!gameRule->cardCompare(validCards[validCards.size() - 1], lastCards[lastCards.size() - 1])) {
+                    validCards.clear();
+                }
+            } else {
+                // 对子、三张、四张
+                Card::getSameValueCards(&myCards, myCards[i].get_value(), &validCards);
+            }
         }
     }
+
     return validCards;
 }
 
@@ -148,109 +146,25 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
             validCards.push_back(myCards[i]);
         }
     } else {
-        // 不是第一个出牌
-        int lastValue = lastDisposedCards[0].get_value();
-        int lastCount = lastDisposedCards.size();
+        // 判断上家出牌类型
+        CombinateType combinationType = gameRule->cardsType(lastDisposedCards);
 
-        // 判断上一个玩家出的牌的类型, 这里涉及到玩法，可以专门定义一个类，做出牌判断
-        bool isSingle = false, isPair = false, isThree = false, isBomb = false;
-        if (lastCount == 1) {
-            isSingle = true;
-        } else if (lastCount == 2 && lastDisposedCards[0].get_value() == lastDisposedCards[1].get_value()) {
-            isPair = true;
-        } else if (lastCount == 3 && lastDisposedCards[0].get_value() == lastDisposedCards[1].get_value()
-                && lastDisposedCards[1].get_value() == lastDisposedCards[2].get_value()) {
-            isThree = true;
-        } else if (lastCount == 4 && lastDisposedCards[0].get_value() == lastDisposedCards[1].get_value()
-                && lastDisposedCards[1].get_value() == lastDisposedCards[2].get_value()
-                && lastDisposedCards[2].get_value() == lastDisposedCards[3].get_value()) {
-            isBomb = true;
-        }
-
-        // 单牌
-        if (isSingle) {
-            validCards = searchSingleCards(myCards, lastValue);
-            if (validCards.empty()) {
-                validCards = searchMultiSameValueCards(myCards, lastValue, 2);
-                if (validCards.empty()) {
-                    validCards = searchMultiSameValueCards(myCards, lastValue, 3);
-                    if (validCards.empty()) {
-                        validCards = searchMultiSameValueCards(myCards, lastValue, 4);
-                    }
-                }
+        // 根据当前场上的牌组合类型选择可以出的牌
+        switch (combinationType) {
+            case CombinateType::SINGLE: {
+                validCards = searchSingleCards(myCards, lastDisposedCards[0]);
+                break;
             }
-            vector<Card> sequenceCards = searchSequenceCards(myCards, lastValue, 5, 1);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
+            case CombinateType::PAIR:
+            case CombinateType::THREE:
+            case CombinateType::FOUR: {
+                validCards = searchMultiSameValueCards(myCards, lastDisposedCards, lastDisposedCards.size());
+                break;
             }
-            sequenceCards = searchSequenceCards(myCards, lastValue, 6, 2);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
-            }
-            sequenceCards = searchSequenceCards(myCards, lastValue, 8, 3);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
-            }
-            // 剪枝策略
-            if (validCards.empty() && myCards[0].get_value() > lastValue) {
-                return validCards;
-            }
-        }
-        // 对子
-        else if (isPair) {
-            validCards = searchMultiSameValueCards(myCards, lastValue, 2);
-            if (validCards.empty()) {
-                validCards = searchMultiSameValueCards(myCards, lastValue, 3);
-                if (validCards.empty()) {
-                    validCards = searchMultiSameValueCards(myCards, lastValue, 4);
-                }
-            }
-            vector<Card> sequenceCards = searchSequenceCards(myCards, lastValue, 3, 1);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
-            }
-            sequenceCards = searchSequenceCards(myCards, lastValue, 4, 2);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
-            }
-            sequenceCards = searchSequenceCards(myCards, lastValue, 6, 3);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
-            }
-            // 剪枝策略
-            if (validCards.empty() && myCards[0].get_value() > lastValue) {
-                return validCards;
-            }
-        }
-        // 三张
-        else if (isThree) {
-            validCards = searchMultiSameValueCards(myCards, lastValue, 3);
-            if (validCards.empty()) {
-                validCards = searchMultiSameValueCards(myCards, lastValue, 4);
-            }
-            vector<Card> sequenceCards = searchSequenceCards(myCards, lastValue, 2, 1);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
-            }
-            sequenceCards = searchSequenceCards(myCards, lastValue, 3, 2);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
-            }
-            sequenceCards = searchSequenceCards(myCards, lastValue, 4, 3);
-            if (!sequenceCards.empty()) {
-                validCards.insert(validCards.end(), sequenceCards.begin(), sequenceCards.end());
-            }
-            // 剪枝策略
-            if (validCards.empty() && myCards[0].get_value() > lastValue) {
-                return validCards;
-            }
-        }
-        // 炸弹
-        else if (isBomb) {
-            validCards = searchMultiSameValueCards(myCards, lastValue, 4);
-            // 剪枝策略
-            if (validCards.empty() && myCards[0].get_value() > lastValue) {
-                return validCards;
+            case CombinateType::STRAIGHT:
+            case CombinateType::SINGLE_SUIT:
+            default: {
+                break;
             }
         }
     }

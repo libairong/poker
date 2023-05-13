@@ -17,7 +17,8 @@ public:
         _name(name),
         _currentCardNum(0),
         _maxCardNum(5),
-        _position(position) {}
+        _position(position),
+        gameRule() {}
     virtual ~Player() {}  // 将析构函数声明为虚函数
     virtual void addCard(Card card) = 0;
     virtual void sortCards() = 0;
@@ -63,8 +64,8 @@ public:
     vector<Card> action(const Scene *scene) override;
 private:
     vector<Card> getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards);
-    vector<Card> searchSingleCards(const vector<Card>& myCards, int lastValue);
-    vector<Card> searchMultiSameValueCards(const vector<Card>& myCards, int lastValue, int cntSameValue);
+    vector<Card> searchSingleCards(const vector<Card>& myCards, const Card& lastCard);
+    vector<Card> searchMultiSameValueCards(const vector<Card>& myCards, const vector<Card>& lastCards, int cntSameValue);
     vector<Card> searchSequenceCards(const vector<Card>& myCards, int lastValue, int len, int cntSameValue);
 
     vector<Card> _cards;
