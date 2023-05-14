@@ -97,11 +97,11 @@ void Game::start() {
                 cout << endl;
                 scene.numOfTheCardInPlayers[_players[i]->getPosition()] = _players[i]->getCurrentCardNum();
                 disposeCards(i, cardsToShow);
+                scene.resetIsPlayerPass();
             }
             (i + 1) == (int)_players.size() ? i = 0 : i += 1;
         }
         playersTurn = _disposed_cards[_disposed_cards.size() - 1].position;
-        scene.resetIsPlayerPass();
         round++;
     }
 }
