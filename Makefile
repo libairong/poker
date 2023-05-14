@@ -16,7 +16,7 @@ TARGET := $(BINDIR)/card_game
 MKDIR_P = mkdir -p
 
 # Debug模式CFLAGS
-CFLAGS_DEBUG = -g -ggdb
+CFLAGS_DEBUG = -g
 CXXFLAGS_DEBUG = $(CXXFLAGS) $(CFLAGS_DEBUG)
 
 # Release模式CFLAGS

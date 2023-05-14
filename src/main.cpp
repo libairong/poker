@@ -12,7 +12,7 @@ int main() {
 
     computer_num = 10 - human_num;
     // Game game(human_num, computer_num);
-    Game game(0, 10);
+    Game game(0, 2);
     game.start();
 
     return 0;

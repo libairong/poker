@@ -53,8 +53,8 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
     // printf("validCards.size: %d \n", (int)validCards.size());
     // 2, 出牌，后续根据当前场上的牌和已经打出去的牌判断
     // 这里先随机选择一张手牌
-    int idx = rand() % validCards.size();
-    Card card = validCards[idx];
+    // int idx = rand() % validCards.size();
+    Card card = validCards[validCards.size() - 1];
 
     // 这里循环移除要出的手牌
     myCards.erase(remove(myCards.begin(), myCards.end(), card), myCards.end());

@@ -6,7 +6,9 @@
 #include <ctime>
 #include <cstring>
 
-Game::Game(int human_num, int computer_num): _human_num(human_num), _computer_num(computer_num) {
+Game::Game(int human_num, int computer_num):
+    _human_num(human_num), _computer_num(computer_num),
+    playersTurn(0) {
     // 初始化规则参考类
     gameRule = make_shared<GameRule7g523>();
 
@@ -63,62 +65,66 @@ Game::~Game() {
 }
 
 void Game::start() {
-    // 发牌
-    dealCards();
+#define MAX_ROUND 2
 
-    // 开始
-#ifdef DEBUG
-    for (int i = 0; i < (int)_players.size(); i++) {
-        // 摊牌
-        _players[i]->printCards();
-        // get play cards and show with scene
-        vector<Card> cardsToShow = _players[i]->action(&scene);
-        cout << "[" << _players[i]->getName() << "] ";
-        for (const auto& card : cardsToShow) {
-            card.print();
-        }
-        scene.numOfTheCardInPlayers[_players[i]->getPosition()] = _players[i]->getCurrentCardNum();
+    // 记录下一次是谁先出牌
+    int round = 0;
+    while (round < MAX_ROUND) {  // 这里应该是以取胜、卡牌用完为准
         cout << endl;
-
-        if (cardsToShow.size() != 0)
-            disposeCards(i, cardsToShow);
-    }
-#else
-    while (!_cards.empty()) {
-        for (int i = 0; i < (int)_players.size(); i++) {
+        cout << "round: " << round << endl;
+        // 发牌
+        dealCards();
+        // 开始
+        // 1，从之前最大的人开始出牌。2，打到最大才重新发牌
+        int i = playersTurn;
+        while (true) {
             // 摊牌
             _players[i]->printCards();
             // get play cards and show with scene
             vector<Card> cardsToShow = _players[i]->action(&scene);
             cout << "[" << _players[i]->getName() << "] ";
-            for (const auto& card : cardsToShow) {
-                card.print();
-            }
-            scene.numOfTheCardInPlayers[_players[i]->getPosition()] = _players[i]->getCurrentCardNum();
-            cout << endl;
 
-            if (cardsToShow.size() != 0)
+            if (cardsToShow.empty()) {
+                cout << "要不起！" << endl;
+                scene.isPlayerPass[i] = true;
+                // 判断是否是其他人也是要不起
+                if (scene.getTheFalseNumOfIsPlayerPass() == 1)
+                    break;
+            } else {
+                for (const auto& card : cardsToShow) {
+                    card.print();
+                }
+                cout << endl;
+                scene.numOfTheCardInPlayers[_players[i]->getPosition()] = _players[i]->getCurrentCardNum();
                 disposeCards(i, cardsToShow);
+            }
+            (i + 1) == (int)_players.size() ? i = 0 : i += 1;
         }
+        playersTurn = _disposed_cards[_disposed_cards.size() - 1].position;
+        scene.resetIsPlayerPass();
+        round++;
     }
-#endif
 }
 
 // 增加测试模式，给指定玩家发特定的牌
-#define DEBUG
-
 #ifndef DEBUG
 void Game::dealCards() {
-    for (int j = 0; j < (int)_players.size(); j++) {
+    int j = playersTurn;
+    while (true) {
         Player* player = _players[j];
         while (player->getCurrentCardNum() < player->getMaxCardNum()) {
             if (_cards.size() == 0)
-                return;
+                break;
             Card card = takeTopCard();
             player->addCard(card);
         }
         player->sortCards();
+        (j + 1) == (int)_players.size() ? j = 0 : j += 1;
+
+        if (j == (int)playersTurn)
+            break;
     }
+    scene.theNumberOfRemainingCards = _cards.size();
 }
 #else
 void Game::dealCards() {
@@ -239,9 +245,11 @@ void Game::disposeCards(int playerPosition, vector<Card> cards) {
     PositionToCards positionToCard(playerPosition, lastCards);
     _disposed_cards.push_back(positionToCard);
 }
+
 void Game::initScene() {
     for (int i = 0; i < (int)_players.size(); i++) {
         scene.isPlayerActive[i] = true;
+        scene.isPlayerPass[i] = false;
         scene.numOfTheCardInPlayers[i] = 5;
         scene._disposed_cards = &_disposed_cards;
         scene.theNumberOfRemainingCards = _cards.size();
