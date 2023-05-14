@@ -67,6 +67,7 @@ void Game::start() {
     dealCards();
 
     // 开始
+#ifdef DEBUG
     for (int i = 0; i < (int)_players.size(); i++) {
         // 摊牌
         _players[i]->printCards();
@@ -82,6 +83,25 @@ void Game::start() {
         if (cardsToShow.size() != 0)
             disposeCards(i, cardsToShow);
     }
+#else
+    while (!_cards.empty()) {
+        for (int i = 0; i < (int)_players.size(); i++) {
+            // 摊牌
+            _players[i]->printCards();
+            // get play cards and show with scene
+            vector<Card> cardsToShow = _players[i]->action(&scene);
+            cout << "[" << _players[i]->getName() << "] ";
+            for (const auto& card : cardsToShow) {
+                card.print();
+            }
+            scene.numOfTheCardInPlayers[_players[i]->getPosition()] = _players[i]->getCurrentCardNum();
+            cout << endl;
+
+            if (cardsToShow.size() != 0)
+                disposeCards(i, cardsToShow);
+        }
+    }
+#endif
 }
 
 // 增加测试模式，给指定玩家发特定的牌

@@ -1,7 +1,5 @@
 #include "Player.hpp"
 
-#define DP printf("[%s] %s, %d \n", __FILE__, __func__, __LINE__);
-
 ComputerPlayer::ComputerPlayer(string name, int position): Player(name, position) {}
 
 void ComputerPlayer::addCard(Card card) {
@@ -52,6 +50,7 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
     if (validCards.size() == 0)
         return validCards;
 
+    // printf("validCards.size: %d \n", (int)validCards.size());
     // 2, 出牌，后续根据当前场上的牌和已经打出去的牌判断
     // 这里先随机选择一张手牌
     int idx = rand() % validCards.size();
@@ -152,7 +151,7 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
     } else {
         // 判断上家出牌类型
         CombinateType combinationType = gameRule->cardsType(lastDisposedCards);
-        printf("combinationType: %d \n", combinationType);
+        // printf("combinationType: %d \n", combinationType);
 
         // 根据当前场上的牌组合类型选择可以出的牌
         switch (combinationType) {
@@ -174,18 +173,6 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
         }
     }
 
-    // 缓存查找的结果
-    string cardString = "";
-    for (int i = 0; i < (int)lastDisposedCards.size(); i++) {
-        cardString += lastDisposedCards[i].toString();
-    }
-
-    //  这里true 部分应该放在函数开头，不用再计算了
-    if (cache.count(cardString) > 0) {
-        return cache[cardString];
-    } else {
-        cache[cardString] = validCards;
-    }
     return validCards;
 }
 
