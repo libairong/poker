@@ -9,6 +9,7 @@
 #include "Player.hpp"
 #include "Scene.hpp"
 #include "GameRule.hpp"
+#include "debug.hpp"
 
 using namespace std;
 /**

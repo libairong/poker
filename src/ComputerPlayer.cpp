@@ -22,8 +22,12 @@ void ComputerPlayer::printCards() const {
 
 // 根据场上已有牌和上一个玩家的出牌出牌
 vector<Card> ComputerPlayer::action(const Scene *scene) {
+    vector<Card> validCards;
     // 玩家当前手牌
     vector<Card> myCards = _cards;
+
+    if (myCards.empty())
+        return validCards;
 
     // 场上已经出掉的牌
     vector<PositionToCards>& disposedCards = *(scene->_disposed_cards);
@@ -42,7 +46,7 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
     }
 
     // 获取可以出的牌，不会影响到手牌
-    vector<Card> validCards = getValidCards(myCards, lastDisposedCards);
+    validCards = getValidCards(myCards, lastDisposedCards);
 
     // 1, 要不起
     if (validCards.size() == 0)
@@ -68,7 +72,7 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
 vector<Card> ComputerPlayer::searchSingleCards(const vector<Card>& myCards, const Card& lastCard) {
     vector<Card> validCards;
 
-    if (!gameRule->cardCompare(myCards[myCards.size() - 1], lastCard))
+    if (!gameRule->cardCompare(myCards[0], lastCard))
         return validCards;
 
     for (int i = 0; i < (int)myCards.size(); i++) {
@@ -148,6 +152,7 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
     } else {
         // 判断上家出牌类型
         CombinateType combinationType = gameRule->cardsType(lastDisposedCards);
+        printf("combinationType: %d \n", combinationType);
 
         // 根据当前场上的牌组合类型选择可以出的牌
         switch (combinationType) {
