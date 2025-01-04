@@ -1,5 +1,5 @@
-#include "PositionToCards.hpp"
-#include "Card.hpp"
+#include "PositionToCards.h"
+#include "Card.h"
 
 /**
  * 玩家位置对应出掉的牌类

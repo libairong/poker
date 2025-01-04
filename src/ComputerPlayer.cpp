@@ -1,4 +1,4 @@
-#include "Player.hpp"
+#include "ComputerPlayer.h"
 
 ComputerPlayer::ComputerPlayer(string name, int position): Player(name, position) {}
 

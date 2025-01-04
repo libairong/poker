@@ -1,10 +1,13 @@
-#include "Game.hpp"
+#include "Game.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
+
+#include "ComputerPlayer.h"
+#include "HumanPlayer.h"
 
 Game::Game(int human_num, int computer_num):
     _human_num(human_num), _computer_num(computer_num),
@@ -23,9 +26,12 @@ Game::Game(int human_num, int computer_num):
 
     srand(time(0));
 
-    for (int currentPlayerIndex = 0; currentPlayerIndex < computer_num + human_num; currentPlayerIndex++) {
+    for (int currentPlayerIndex = 0; currentPlayerIndex < computer_num + human_num;
+		                     currentPlayerIndex++) {
         if (tmpComputerNum == 0) {
-            HumanPlayer* humanPlayer = new HumanPlayer("Player" + to_string(human_num - tmpHumanNum), currentPlayerIndex);
+            HumanPlayer* humanPlayer = new HumanPlayer("Player"
+			                              + to_string(human_num - tmpHumanNum),
+						      currentPlayerIndex);
             humanPlayer->setGameRule(gameRule);
             _players.push_back(humanPlayer);
             tmpHumanNum--;
@@ -65,7 +71,7 @@ Game::~Game() {
 }
 
 void Game::start() {
-#define MAX_ROUND 2
+#define MAX_ROUND 5
 
     // 记录下一次是谁先出牌
     int round = 0;

@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
-#include "Card.hpp"
+#include "Card.h"
 
 enum CombinateType {
     SINGLE, PAIR, THREE, FOUR, STRAIGHT, SINGLE_SUIT

@@ -1,4 +1,4 @@
-#include "Player.hpp"
+#include "HumanPlayer.h"
 
 HumanPlayer::HumanPlayer(string name, int position):
     Player(name, position) {}

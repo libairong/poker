@@ -1,4 +1,4 @@
-#include "GameRule.hpp"
+#include "GameRule.h"
 
 GameRule7g523::GameRule7g523() {
     //  Card::value -> Rank

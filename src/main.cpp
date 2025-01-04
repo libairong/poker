@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Game.hpp"
+#include "Game.h"
 
 int main() {
     int human_num, computer_num;

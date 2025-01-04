@@ -5,11 +5,11 @@
 #include <algorithm>
 #include <ctime>
 #include <memory>
-#include "Card.hpp"
-#include "Player.hpp"
-#include "Scene.hpp"
-#include "GameRule.hpp"
-#include "debug.hpp"
+#include "Card.h"
+#include "Player.h"
+#include "Scene.h"
+#include "GameRule.h"
+#include "debug.h"
 
 using namespace std;
 /**
