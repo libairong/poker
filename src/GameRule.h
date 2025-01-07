@@ -7,7 +7,7 @@ enum CombinateType {
     SINGLE, PAIR, THREE, FOUR, STRAIGHT, SINGLE_SUIT
 };
 
-// 规则类，提供卡牌大小比较功能
+// 规则类，提供卡牌列表、提供卡牌大小比较功能
 class GameRule {
 public:
     GameRule() = default;
@@ -17,6 +17,7 @@ public:
     virtual bool cardValueCompare(int valueA, int valueB) = 0;
 
     virtual CombinateType  cardsType(const vector<Card>& cards) = 0;
+    virtual vec
 };
 
 class GameRule7g523 : public GameRule {

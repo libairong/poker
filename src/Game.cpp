@@ -234,6 +234,7 @@ void Game::initCards() {
     _cards.push_back(Card(3, BIG_JOKER_VALUE)); // 大王
     shuffle(_cards);
 }
+
 void Game::shuffle(vector<Card>& cards) {
     srand((unsigned int)time(NULL));
     random_shuffle(cards.begin(), cards.end());

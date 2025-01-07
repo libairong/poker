@@ -13,7 +13,7 @@
 
 using namespace std;
 /**
- * 游戏管理类
+ * 游戏管理类，管理游戏流程和整体游戏资源！
  */
 class Game {
 public:
@@ -29,7 +29,6 @@ private:
     void initScene();
 
     vector<Player*> _players;
-    vector<Card> _cards;  // 抽牌牌堆
     vector<PositionToCards>  _disposed_cards;  // 出掉的牌牌堆
     int _human_num;
     int _computer_num;
