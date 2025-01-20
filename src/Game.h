@@ -21,19 +21,13 @@ public:
     ~Game();
     void start();
 private:
-    void initCards();
-    void shuffle(vector<Card>& cards);
-    Card takeTopCard();
-    void disposeCards(int playerPosition, vector<Card> cards);
-    void dealCards();
-    void initScene();
+    void init();
 
     vector<Player*> _players;
-    vector<PositionToCards>  _disposed_cards;  // 出掉的牌牌堆
     int _human_num;
     int _computer_num;
     int playersTurn;
-    Scene scene;
+    shared_ptr<Scene> scene;
     shared_ptr<GameRule> gameRule;
 };
 

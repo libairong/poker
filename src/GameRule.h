@@ -13,21 +13,10 @@ public:
     GameRule() = default;
     virtual ~GameRule() {};
 
+    virtual void addCards(Player &player) = 0;  // 直接帮玩家摸牌
     virtual bool cardCompare(const Card& a, const Card& b) = 0;
     virtual bool cardValueCompare(int valueA, int valueB) = 0;
 
     virtual CombinateType  cardsType(const vector<Card>& cards) = 0;
-    virtual vec
-};
-
-class GameRule7g523 : public GameRule {
-public:
-    GameRule7g523();
-    bool cardCompare(const Card& a, const Card& b) override;
-    bool cardValueCompare(int valueA, int valueB) override;
-    CombinateType cardsType(const vector<Card>& cards);
-
-private:
-    map<int, int> cardRankRule;
 };
 

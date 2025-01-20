@@ -15,8 +15,8 @@ Game::Game(int human_num, int computer_num):
     // 初始化规则参考类
     gameRule = make_shared<GameRule7g523>();
 
-    // 初始化扑克牌
-    initCards();
+    // 初始化场景
+    
     /**
      * 初始化玩家列表
      * 通过人类玩家和电脑玩家的比例计算的概率来分配玩家座次。
@@ -233,11 +233,6 @@ void Game::initCards() {
     _cards.push_back(Card(2, LITTLE_JOKER_VALUE)); // 小王
     _cards.push_back(Card(3, BIG_JOKER_VALUE)); // 大王
     shuffle(_cards);
-}
-
-void Game::shuffle(vector<Card>& cards) {
-    srand((unsigned int)time(NULL));
-    random_shuffle(cards.begin(), cards.end());
 }
 
 Card Game::takeTopCard() {

@@ -15,9 +15,6 @@
 class ComputerPlayer : public Player {
 public:
     ComputerPlayer(string name, int position);
-    void addCard(Card card) override;
-    void sortCards() override;
-    void printCards() const override;
     vector<Card> action(const Scene *scene) override;
 private:
     vector<Card> getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards);
@@ -25,7 +22,6 @@ private:
     vector<Card> searchMultiSameValueCards(const vector<Card>& myCards, const vector<Card>& lastCards, int cntSameValue);
     vector<Card> searchSequenceCards(const vector<Card>& myCards, int lastValue, int len, int cntSameValue);
 
-    vector<Card> _cards;
-    unordered_map<string, vector<Card>> cache;
+    vector<Card *> mCards;
 };
 

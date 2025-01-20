@@ -1,6 +1,6 @@
-#include "GameRule.h"
+#include "GameRule7g523.h"
 
-GameRule7g523::GameRule7g523() {
+GameRule7g523Helper::GameRule7g523Helper() {
     //  Card::value -> Rank
     cardRankRule.insert({14, 13});  // 大王, 第二大
     cardRankRule.insert({13, 12});
@@ -19,17 +19,17 @@ GameRule7g523::GameRule7g523() {
     cardRankRule.insert({0,  8});
 }
 
-bool GameRule7g523::cardCompare(const Card& a, const Card& b) {
+bool GameRule7g523Helper::cardCompare(const Card& a, const Card& b) {
     if (a.get_value() == b.get_value())
         return a.getSuit() > b.getSuit();
     return cardRankRule[a.get_value()] > cardRankRule[b.get_value()];
 }
 
-bool GameRule7g523::cardValueCompare(int valueA, int valueB) {
+bool GameRule7g523Helper::cardValueCompare(int valueA, int valueB) {
     return cardRankRule[valueA] > cardRankRule[valueB];
 }
 
-CombinateType GameRule7g523::cardsType(const vector<Card>& cards) {
+CombinateType GameRule7g523Helper::cardsType(const vector<Card>& cards) {
     int lastCount = cards.size();
     // 判断上一个玩家出的牌的类型, 这里涉及到玩法，可以专门定义一个类，做出牌判断
     if (lastCount == 1) {

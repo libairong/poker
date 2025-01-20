@@ -2,33 +2,17 @@
 
 ComputerPlayer::ComputerPlayer(string name, int position): Player(name, position) {}
 
-void ComputerPlayer::addCard(Card card) {
-    _cards.push_back(card);
-    _currentCardNum = _cards.size();
-}
-void ComputerPlayer::sortCards() {
-    sort(_cards.begin(), _cards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
-}
-void ComputerPlayer::printCards() const {
-    cout << "[" << _name << "] ";
-    for (const auto& card : _cards) {
-        card.print();
-        cout << " ";
-    }
-    cout << endl;
-}
-
 // 根据场上已有牌和上一个玩家的出牌出牌
 vector<Card> ComputerPlayer::action(const Scene *scene) {
     vector<Card> validCards;
     // 玩家当前手牌
-    vector<Card> myCards = _cards;
+    vector<Card> myCards = mCards;
 
     if (myCards.empty())
         return validCards;
 
     // 场上已经出掉的牌
-    vector<PositionToCards>& disposedCards = *(scene->_disposed_cards);
+    vector<PositionToCards>& disposedCards = *(scene->mDisposedmCards);
     vector<Card> alreadyDisposedCards;
     for (const auto& cards : disposedCards) {
         alreadyDisposedCards.insert(alreadyDisposedCards.end(), cards.cards.begin(), cards.cards.end());
@@ -38,7 +22,7 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
     vector<Card> lastDisposedCards;
     if (disposedCards.size() > 0) {
         PositionToCards lastDisposedPositionToCards = disposedCards.back();
-        if (lastDisposedPositionToCards.position != _position) {
+        if (lastDisposedPositionToCards.position != mPosition) {
             lastDisposedCards = lastDisposedPositionToCards.cards;
         }
     }
@@ -60,8 +44,8 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
     myCards.erase(remove(myCards.begin(), myCards.end(), card), myCards.end());
 
     // 更新玩家手牌数
-    _currentCardNum = myCards.size();
-    _cards = myCards;
+    mCurrentCardNum = myCards.size();
+    mCards = myCards;
 
     // 返回出牌
     return vector<Card>{card};
