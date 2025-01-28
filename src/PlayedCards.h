@@ -14,7 +14,7 @@ class PlayedCards {
 public:
     PlayedCards(shared_ptr<Player> player, vector<shared_ptr<Card>> cards);
 
-    shared_ptr<Player> player;
-    vector<shared_ptr<Card>> cards;
+    shared_ptr<Player> mPlayer;
+    vector<shared_ptr<Card>> mCards;
 };
 #endif  // __PLAYEDCARDS_H__

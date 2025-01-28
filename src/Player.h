@@ -32,7 +32,7 @@ public:
         }
         cout << endl;
     };
-    virtual void action(const Scene *Scene) = 0;
+    virtual void action(void) = 0;
     virtual int  getCurrentCardNum() { return mCurrentCardNum; };
     virtual int  getMaxCardNum() { return mMaxCardNum; }
     virtual string getName() { return mName; }

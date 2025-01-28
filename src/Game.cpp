@@ -38,6 +38,9 @@ Game::~Game() {
 }
 
 void Game::start() {
+    for (auto player : mPlayers) {
+        player->action();
+    }
 #define MAX_ROUND 5
 #if 0
     // 记录下一次是谁先出牌

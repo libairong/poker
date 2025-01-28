@@ -3,7 +3,7 @@
 ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene): Player(name, position, gameR, scene) {}
 
 // 根据场上已有牌和上一个玩家的出牌出牌
-void ComputerPlayer::action(const Scene *scene) {
+void ComputerPlayer::action(void) {
 #if 0
     vector<Card> validCards;
     // 玩家当前手牌

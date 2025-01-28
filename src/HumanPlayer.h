@@ -18,6 +18,6 @@
 class HumanPlayer : public Player {
 public:
     HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
-    void action(const Scene *Scene) override;
+    void action(void) override;
 };
 #endif  // __HUMANPLAYER_H__

@@ -9,10 +9,6 @@ OBJ_DIR = obj
 OBJ = $(SRC:$(SRC_DIRS)/%.cpp=$(OBJ_DIR)/%.o)
 EXEC = my_game
 
-# 依赖文件
-DEP = $(OBJ:.o=.d)
-
-
 # 默认目标
 all: $(EXEC)
 
@@ -35,7 +31,7 @@ $(OBJ_DIR):
 # 清理目标文件和可执行文件
 clean:
 	@echo "Cleaning up the build directory..."
-	rm -f $(OBJ_DIR)/*.o $(EXEC) $(DEP)
+	rm -f $(OBJ_DIR)/*.o $(EXEC)
 	@echo "Clean completed."
 
 # 安装目标

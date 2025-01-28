@@ -18,7 +18,7 @@
 class ComputerPlayer : public Player {
 public:
     ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
-    void action(const Scene *scene) override;
+    void action(void) override;
 private:
     vector<Card> getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards);
     vector<Card> searchSingleCards(const vector<Card>& myCards, const Card& lastCard);
