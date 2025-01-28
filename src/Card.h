@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __CARD_H__
+#define __CARD_H__
 
 #include <string>
 #include <iostream>
@@ -39,3 +40,5 @@ private:
     int _value;
     Suit _suit;
 };
+#endif  // __CARD_H__
+

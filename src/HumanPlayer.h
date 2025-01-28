@@ -7,6 +7,9 @@
 *   description :
 *
 ================================================================*/
+#ifndef __HUMANPLAYER_H__
+#define __HUMANPLAYER_H__
+
 #include "Player.h"
 
 /**
@@ -14,9 +17,7 @@
  */
 class HumanPlayer : public Player {
 public:
-    HumanPlayer(string name, int position);
-    vector<Card> action(const Scene *Scene) override;
-private:
-    vector<Card> _cards;
+    HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
+    void action(const Scene *Scene) override;
 };
-
+#endif  // __HUMANPLAYER_H__

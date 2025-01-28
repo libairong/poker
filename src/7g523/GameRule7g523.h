@@ -7,14 +7,14 @@
 *   description :
 *
 ================================================================*/
+#ifndef __GAMERULE7G523HELPER_H__
+#define __GAMERULE7G523HELPER_H__
 
-
-#pragma once
 #include "../GameRule.h"
 
 class GameRule7g523Helper : public GameRule {
 public:
-    GameRule7g523();
+    GameRule7g523Helper();
     bool cardCompare(const Card& a, const Card& b) override;
     bool cardValueCompare(int valueA, int valueB) override;
     CombinateType cardsType(const vector<Card>& cards);
@@ -22,4 +22,4 @@ public:
 private:
     map<int, int> cardRankRule;
 };
-
+#endif  // __GAMERULE7G523HELPER_H__

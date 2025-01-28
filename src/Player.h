@@ -1,9 +1,11 @@
-#pragma once
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
 
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <memory>
+#include "Card.h"
 #include "Scene.h"
 #include "GameRule.h"
 #include "debug.h"
@@ -14,18 +16,18 @@ using namespace std;
  */
 class Player {
 public:
-    Player(string name, int position):
+    Player(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene):
         mName(name),
         mCurrentCardNum(0),
         mMaxCardNum(5),
         mPosition(position),
         mGameRule(gameR),
-	mScene(scene) {}
+        mScene(scene) {}
     virtual ~Player() {}  // 将析构函数声明为虚函数
     virtual void printCards() {
         cout << "[" << mName << "] ";
         for (const auto& card : mCards) {
-            card.print();
+            card->print();
             cout << " ";
         }
         cout << endl;
@@ -43,14 +45,15 @@ public:
 
 private:
     // 从牌堆里摸牌
-    virtual void addCard(Card card) {
+    virtual void addCard(shared_ptr<Card> card) {
         mCards.push_back(card);
-        mCurrentCardNum = mCards.size();   
+        mCurrentCardNum = mCards.size();
     };
     virtual void sortCards() {
-        sort(mCards.begin(), mCards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
+        // sort(mCards.begin(), mCards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
     };
     shared_ptr<GameRule> mGameRule;
     shared_ptr<Scene> mScene;
+    vector<shared_ptr<Card>> mCards;
 };
-
+#endif  // __PLAYER_H__

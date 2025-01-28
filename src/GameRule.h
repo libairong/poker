@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __GAMERULE_H__
+#define __GAMERULE_H__
+
 #include <map>
 #include <vector>
 #include "Card.h"
@@ -13,10 +15,10 @@ public:
     GameRule() = default;
     virtual ~GameRule() {};
 
-    virtual void addCards(Player &player) = 0;  // 直接帮玩家摸牌
     virtual bool cardCompare(const Card& a, const Card& b) = 0;
     virtual bool cardValueCompare(int valueA, int valueB) = 0;
 
     virtual CombinateType  cardsType(const vector<Card>& cards) = 0;
 };
+#endif  // __GAMERULE_H__
 

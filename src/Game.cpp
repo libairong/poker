@@ -8,71 +8,38 @@
 
 #include "ComputerPlayer.h"
 #include "HumanPlayer.h"
+#include "7g523/GameRule7g523.h"
 
 Game::Game(int human_num, int computer_num):
-    _human_num(human_num), _computer_num(computer_num),
-    playersTurn(0) {
+    mHuman_num(human_num), mComputer_num(computer_num),
+    mPlayersTurn(0) {
+    int currentPlayerIndex = 0;
+
     // 初始化规则参考类
-    gameRule = make_shared<GameRule7g523>();
+    mGameRule = make_shared<GameRule7g523Helper>();
 
     // 初始化场景
-    
+    mScene = make_shared<Scene>();
+    mScene->initResourceCards();
+
     /**
      * 初始化玩家列表
-     * 通过人类玩家和电脑玩家的比例计算的概率来分配玩家座次。
      */
-    int tmpComputerNum = computer_num;
-    int tmpHumanNum = human_num;
+    shared_ptr<Player> humanPlayer = make_shared<HumanPlayer>("Player",
+		    currentPlayerIndex++, mGameRule, mScene);
+    mPlayers.push_back(humanPlayer);
 
-    srand(time(0));
-
-    for (int currentPlayerIndex = 0; currentPlayerIndex < computer_num + human_num;
-		                     currentPlayerIndex++) {
-        if (tmpComputerNum == 0) {
-            HumanPlayer* humanPlayer = new HumanPlayer("Player"
-			                              + to_string(human_num - tmpHumanNum),
-						      currentPlayerIndex);
-            humanPlayer->setGameRule(gameRule);
-            _players.push_back(humanPlayer);
-            tmpHumanNum--;
-            continue;
-        }
-
-        if (tmpHumanNum == 0) {
-            ComputerPlayer* computerPlayer = new ComputerPlayer("Computer" + to_string(computer_num - tmpComputerNum), currentPlayerIndex);
-            computerPlayer->setGameRule(gameRule);
-            _players.push_back(computerPlayer);
-            tmpComputerNum--;
-            continue;
-        }
-
-        int randNum = rand() % tmpComputerNum + tmpHumanNum;  // randNum: 0 ~ playerNum - 1;
-        bool isComputer = (randNum < tmpComputerNum) ? true : false;
-        if (isComputer) {
-            ComputerPlayer* computerPlayer = new ComputerPlayer("Computer " + to_string(computer_num - tmpComputerNum), currentPlayerIndex);
-            computerPlayer->setGameRule(gameRule);
-            _players.push_back(computerPlayer);
-            tmpComputerNum--;
-        } else {
-            HumanPlayer* humanPlayer = new HumanPlayer("Player " + to_string(human_num - tmpHumanNum), currentPlayerIndex);
-            humanPlayer->setGameRule(gameRule);
-            _players.push_back(humanPlayer);
-            tmpHumanNum--;
-        }
-    }
-
-    initScene();
+    shared_ptr<ComputerPlayer> computerPlayer = make_shared<ComputerPlayer>("Computer",
+		    currentPlayerIndex++, mGameRule, mScene);
+    mPlayers.push_back(computerPlayer);
 }
 
 Game::~Game() {
-    for (auto it = _players.begin(); it != _players.end(); it++) {
-        delete *it;
-    }
 }
 
 void Game::start() {
 #define MAX_ROUND 5
-
+#if 0
     // 记录下一次是谁先出牌
     int round = 0;
     while (round < MAX_ROUND) {  // 这里应该是以取胜、卡牌用完为准
@@ -82,13 +49,13 @@ void Game::start() {
         dealCards();
         // 开始
         // 1，从之前最大的人开始出牌。2，打到最大才重新发牌
-        int i = playersTurn;
+        int i = mPlayersTurn;
         while (true) {
             // 摊牌
-            _players[i]->printCards();
+            mPlayers[i]->printCards();
             // get play cards and show with scene
-            vector<Card> cardsToShow = _players[i]->action(&scene);
-            cout << "[" << _players[i]->getName() << "] ";
+            vector<Card> cardsToShow = mPlayers[i]->action(&scene);
+            cout << "[" << mPlayers[i]->getName() << "] ";
 
             if (cardsToShow.empty()) {
                 cout << "要不起！" << endl;
@@ -101,38 +68,23 @@ void Game::start() {
                     card.print();
                 }
                 cout << endl;
-                scene.numOfTheCardInPlayers[_players[i]->getPosition()] = _players[i]->getCurrentCardNum();
+                scene.numOfTheCardInPlayers[mPlayers[i]->getPosition()] = mPlayers[i]->getCurrentCardNum();
                 disposeCards(i, cardsToShow);
                 scene.resetIsPlayerPass();
             }
-            (i + 1) == (int)_players.size() ? i = 0 : i += 1;
+            (i + 1) == (int)mPlayers.size() ? i = 0 : i += 1;
         }
-        playersTurn = _disposed_cards[_disposed_cards.size() - 1].position;
+        mPlayersTurn = _disposed_cards[_disposed_cards.size() - 1].position;
         round++;
     }
+#endif
 }
 
 // 增加测试模式，给指定玩家发特定的牌
 #ifndef DEBUG
-void Game::dealCards() {
-    int j = playersTurn;
-    while (true) {
-        Player* player = _players[j];
-        while (player->getCurrentCardNum() < player->getMaxCardNum()) {
-            if (_cards.size() == 0)
-                break;
-            Card card = takeTopCard();
-            player->addCard(card);
-        }
-        player->sortCards();
-        (j + 1) == (int)_players.size() ? j = 0 : j += 1;
 
-        if (j == (int)playersTurn)
-            break;
-    }
-    scene.theNumberOfRemainingCards = _cards.size();
-}
 #else
+/*
 void Game::dealCards() {
     // Deal cards by config.txt
     string filename="debug/config.txt";
@@ -211,7 +163,7 @@ void Game::dealCards() {
             }
 
             // Deal card to player.
-            _players[currentLine]->addCard(Card(suitValue, cardValue));
+            mPlayers[currentLine]->addCard(Card(suitValue, cardValue));
             currentColumn++;
         }
 
@@ -219,42 +171,15 @@ void Game::dealCards() {
     }
     fin.close();
 }
+*/
 #endif
 
-void Game::initCards() {
-    _disposed_cards.clear();
-
-    // 四种花色
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 13; j++) {
-            _cards.push_back(Card(i, j));
-        }
-    }
-    _cards.push_back(Card(2, LITTLE_JOKER_VALUE)); // 小王
-    _cards.push_back(Card(3, BIG_JOKER_VALUE)); // 大王
-    shuffle(_cards);
-}
-
-Card Game::takeTopCard() {
-    Card card = _cards.back();
-    _cards.pop_back();
-    return card;
-}
-
+#if 0
 void Game::disposeCards(int playerPosition, vector<Card> cards) {
     vector<Card> lastCards;
     lastCards.insert(lastCards.end(), cards.begin(), cards.end());
     PositionToCards positionToCard(playerPosition, lastCards);
     _disposed_cards.push_back(positionToCard);
 }
-
-void Game::initScene() {
-    for (int i = 0; i < (int)_players.size(); i++) {
-        scene.isPlayerActive[i] = true;
-        scene.isPlayerPass[i] = false;
-        scene.numOfTheCardInPlayers[i] = 5;
-        scene._disposed_cards = &_disposed_cards;
-        scene.theNumberOfRemainingCards = _cards.size();
-    }
-}
+#endif
 

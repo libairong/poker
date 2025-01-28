@@ -1,10 +1,8 @@
 #include "HumanPlayer.h"
 
-HumanPlayer::HumanPlayer(string name, int position):
-    Player(name, position) {}
+HumanPlayer::HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene):
+    Player(name, position, gameR, scene) {}
 
-vector<Card> HumanPlayer::action(const Scene *Scene) {
-    mCurrentCardNum = 0;
-    return mCards;
+void HumanPlayer::action(const Scene *Scene) {
 }
 

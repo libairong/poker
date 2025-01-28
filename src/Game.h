@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __GAME_H__
+#define __GAME_H__
 
 #include <iostream>
 #include <vector>
@@ -23,11 +24,13 @@ public:
 private:
     void init();
 
-    vector<Player*> _players;
-    int _human_num;
-    int _computer_num;
-    int playersTurn;
-    shared_ptr<Scene> scene;
-    shared_ptr<GameRule> gameRule;
+    vector<shared_ptr<Player>> mPlayers;
+    shared_ptr<Scene> mScene;
+    shared_ptr<GameRule> mGameRule;
+
+    int mHuman_num;
+    int mComputer_num;
+    int mPlayersTurn;
 };
+#endif  // __GAME_H__
 

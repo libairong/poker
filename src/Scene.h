@@ -1,9 +1,15 @@
-#pragma once
+#ifndef __SCENE_H__
+#define __SCENE_H__
 
+#include <stdio.h>
 #include <map>
 #include <vector>
+#include <memory>
+#include "Player.h"
 #include "PlayedCards.h"
 
+class PlayedCards;
+class Player;
 /**
  * 场景包括：
  *     1. 玩家
@@ -43,8 +49,8 @@ public:
 	return card;
     };
 
-    PlayedCard getLastPlayedCards() {
-	PlayedCard playedCard = mPlayedCards.back();
+    shared_ptr<PlayedCards> getLastPlayedCards() {
+	shared_ptr<PlayedCards> playedCard = mPlayedCards.back();
 
 	return playedCard;
     };
@@ -54,7 +60,7 @@ public:
     };
 
     shared_ptr<Player> getPlayerByNumber(int number) {
-        if (number > 0 && number < mPlayers.size() )
+        if (number > 0 && number < (int)mPlayers.size() )
             return mPlayers.at(number);
         return NULL;
     };
@@ -64,4 +70,5 @@ private:
     vector<shared_ptr<PlayedCards>>  mPlayedCards;  // 出掉的牌牌堆，玩家可以根据这个来做AI
     vector<shared_ptr<Player>> mPlayers;  // 本局游戏参与者
 };
+#endif  // __SCENE_H__
 

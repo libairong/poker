@@ -7,6 +7,9 @@
 *   description :
 *
 ================================================================*/
+#ifndef __COMPUTERPLAYER_H__
+#define __COMPUTERPLAYER_H__
+
 #include "Player.h"
 
 /**
@@ -14,8 +17,8 @@
  */
 class ComputerPlayer : public Player {
 public:
-    ComputerPlayer(string name, int position);
-    vector<Card> action(const Scene *scene) override;
+    ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
+    void action(const Scene *scene) override;
 private:
     vector<Card> getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards);
     vector<Card> searchSingleCards(const vector<Card>& myCards, const Card& lastCard);
@@ -24,4 +27,5 @@ private:
 
     vector<Card *> mCards;
 };
+#endif  // __COMPUTERPLAYER_H__
 

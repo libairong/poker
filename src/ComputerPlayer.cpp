@@ -1,9 +1,10 @@
 #include "ComputerPlayer.h"
 
-ComputerPlayer::ComputerPlayer(string name, int position): Player(name, position) {}
+ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene): Player(name, position, gameR, scene) {}
 
 // 根据场上已有牌和上一个玩家的出牌出牌
-vector<Card> ComputerPlayer::action(const Scene *scene) {
+void ComputerPlayer::action(const Scene *scene) {
+#if 0
     vector<Card> validCards;
     // 玩家当前手牌
     vector<Card> myCards = mCards;
@@ -49,8 +50,10 @@ vector<Card> ComputerPlayer::action(const Scene *scene) {
 
     // 返回出牌
     return vector<Card>{card};
+#endif
 }
 
+#if 0
 // 查找单牌
 vector<Card> ComputerPlayer::searchSingleCards(const vector<Card>& myCards, const Card& lastCard) {
     vector<Card> validCards;
@@ -159,4 +162,4 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
 
     return validCards;
 }
-
+#endif
