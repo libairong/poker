@@ -2,9 +2,16 @@
 
 ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene): Player(name, position, gameR, scene) {}
 
-// 根据场上已有牌和上一个玩家的出牌出牌
+// 根据场上已有牌和上一个玩家的出牌
 void ComputerPlayer::action(void) {
-#if 0
+    printf("hello! i am computer!\n");
+
+    while (getCurrentCardNum() < getMaxCardNum()) {
+        addCard();
+    }
+
+    printf("has per size: %d\n", getCurrentCardNum());
+
     vector<Card> validCards;
     // 玩家当前手牌
     vector<Card> myCards = mCards;
@@ -50,10 +57,8 @@ void ComputerPlayer::action(void) {
 
     // 返回出牌
     return vector<Card>{card};
-#endif
 }
 
-#if 0
 // 查找单牌
 vector<Card> ComputerPlayer::searchSingleCards(const vector<Card>& myCards, const Card& lastCard) {
     vector<Card> validCards;
@@ -162,4 +167,4 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
 
     return validCards;
 }
-#endif
+

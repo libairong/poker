@@ -19,10 +19,12 @@ public:
     Player(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene):
         mName(name),
         mCurrentCardNum(0),
-        mMaxCardNum(5),
-        mPosition(position),
-        mGameRule(gameR),
-        mScene(scene) {}
+        mMaxCardNum(5) {
+        mPosition = position;
+        mGameRule.reset();
+        mGameRule = gameR;
+        mScene = scene;
+    }
     virtual ~Player() {}  // 将析构函数声明为虚函数
     virtual void printCards() {
         cout << "[" << mName << "] ";
@@ -33,27 +35,27 @@ public:
         cout << endl;
     };
     virtual void action(void) = 0;
-    virtual int  getCurrentCardNum() { return mCurrentCardNum; };
+    virtual int getCurrentCardNum() { return mCurrentCardNum; };
+    virtual void setCurrentCardNum(int num) { mCurrentCardNum = num; }
     virtual int  getMaxCardNum() { return mMaxCardNum; }
     virtual string getName() { return mName; }
     virtual int getPosition() { return mPosition; }
-
-    string mName;
-    int mCurrentCardNum;
-    int mMaxCardNum;
-    int mPosition;
-
-private:
     // 从牌堆里摸牌
-    virtual void addCard(shared_ptr<Card> card) {
+    virtual void addCard(void) {
+        shared_ptr<Card> card = mScene->takeCard();
         mCards.push_back(card);
         mCurrentCardNum = mCards.size();
     };
     virtual void sortCards() {
         // sort(mCards.begin(), mCards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
     };
-    shared_ptr<GameRule> mGameRule;
+private:
+    string mName;
     shared_ptr<Scene> mScene;
+    shared_ptr<GameRule> mGameRule;
+    int mCurrentCardNum = 0;
+    int mMaxCardNum = 0;
+    int mPosition = 0;
     vector<shared_ptr<Card>> mCards;
 };
 #endif  // __PLAYER_H__

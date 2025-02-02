@@ -4,5 +4,7 @@ HumanPlayer::HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, 
     Player(name, position, gameR, scene) {}
 
 void HumanPlayer::action(void) {
+    printf("hello! i am human!\n");
+
 }
 

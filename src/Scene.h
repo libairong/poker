@@ -43,10 +43,10 @@ public:
     };
 
     shared_ptr<Card> takeCard() {
-	shared_ptr<Card> card = mResourceCards.back();
-	mResourceCards.pop_back();
+	    shared_ptr<Card> card = mResourceCards.back();
+	    mResourceCards.pop_back();
 
-	return card;
+	    return card;
     };
 
     shared_ptr<PlayedCards> getLastPlayedCards() {
@@ -68,7 +68,7 @@ public:
 private:
     vector<shared_ptr<Card>> mResourceCards;
     vector<shared_ptr<PlayedCards>>  mPlayedCards;  // 出掉的牌牌堆，玩家可以根据这个来做AI
-    vector<shared_ptr<Player>> mPlayers;  // 本局游戏参与者
+    vector<shared_ptr<Player>> mPlayers;  // 本局游戏参与者，暂时用作debug
 };
 #endif  // __SCENE_H__
 
