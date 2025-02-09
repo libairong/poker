@@ -8,7 +8,7 @@
 *
 ================================================================*/
 
-#if 0
+#ifdef __DISPLAY_DEBUG__
 #include "Layer.h"
 #include "TerminalDisplay.h"
 
