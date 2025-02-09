@@ -15,6 +15,14 @@ Layer::Layer(int width, int height)
     mContent.resize(height, std::vector<Cell>(width, Cell())); // 初始化为空格、默认颜色和无特殊效果
 }
 
+Layer::Layer() {}
+
+void Layer::resize(int width, int height) {
+    mWidth = width;
+    mHeight = height;
+    mContent.resize(height, std::vector<Cell>(width, Cell()));  // 重新设置大小
+}
+
 void Layer::setName(const std::string& name) {
     mName = name;
 }

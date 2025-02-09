@@ -76,6 +76,13 @@ class Layer : public std::enable_shared_from_this<Layer> {
 public:
     // 构造函数
     Layer(int width, int height);
+    Layer();
+
+    // 析构函数
+    virtual ~Layer() = default;
+
+    // 重新设置图层大小
+    void resize(int width, int height);
 
     // 设置图层名字，方便调试
     void setName(const std::string& name);
