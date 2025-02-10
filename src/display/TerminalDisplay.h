@@ -47,7 +47,7 @@ private:
     void moveCursor(int row, int col) const;
 
     vector<shared_ptr<Layer>> mLayers;
-    shared_ptr<Layer> mBackground;
+    shared_ptr<Layer> mDisplayRect;
     struct winsize w;
     const int rows, cols;
     int startRow = 0;

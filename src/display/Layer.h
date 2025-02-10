@@ -115,11 +115,22 @@ public:
     // 获取图层起始坐标
     int getStartRowY() const;
     int getStartColX() const;
+    // 标记图层为脏，需要更新
+    void setDirty(bool dirty);
+    // 获取图层是否为脏，需要更新
+    bool getDirty() const;
+    // 设置是否显示
+    void setIsDisplaying(bool display);
+    // 获取是否显示
+    bool getIsDisplaying() const;
 
 private:
     int mWidth, mHeight;  // 图层的宽度和高度
     int x, y;             // 起始坐标
     std::string mName;    // 图层的名字
+    //  应该被更新的标记
+    bool mDirty;
+    bool isDisplaying;
     std::vector<std::vector<Cell>> mContent; // 图层内容，字符、颜色和效果的组合
 };
 

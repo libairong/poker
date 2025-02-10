@@ -15,22 +15,27 @@
 using namespace std;
 
 TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
-    mBackground = make_shared<Layer>(cols, rows);
-    mBackground->setName("Background");
+    // 隐藏光标
+    cout << "\033[?25l";
 
-    for (int i = 0; i < cols; ++i) {
-        mBackground->setContent(i, 0, to_string(i % 10)[0], Color::WHITE);
-    }
-    for (int i = 0; i < rows; ++i) {
-        mBackground->setContent(0, i, to_string(i % 10)[0], Color::WHITE);
-    }
+    mDisplayRect = make_shared<Layer>(cols, rows);
+    mDisplayRect->setName("Background");
     setStartRowAndCol();
 
     // 设置一个定时任务，每隔一段时间刷新一次屏幕
     thread([this] {
         while (true) {
-            // displayAll();
-            overlayAndDisplay();
+            // 遍历所有图层， 有脏的就更新
+            bool needUpdate = false;
+            for (auto& layer : mLayers) {
+                if (layer->getDirty()) {
+                    needUpdate = true;
+                    break;
+                }
+            }
+            if (needUpdate) {
+                overlayAndDisplay();
+            }
             this_thread::sleep_for(chrono::milliseconds(20));
         }
     }).detach();
@@ -59,24 +64,25 @@ bool TerminalDisplay::addLayer(shared_ptr<Layer> layer) {
 
 void TerminalDisplay::overlayAndDisplay() {
     // 清除屏幕
-    mBackground->clear();
+    mDisplayRect->clear();
     // 将所有图层叠加到在背景图层上，然后显示出来
     for (auto& layer : mLayers) {
+        layer->setIsDisplaying(true);
         // 将图层内容叠加到背景图层上
         auto& content = layer->getContent();
         for (int i = 0; i < layer->getHeight(); ++i) {
             for (int j = 0; j < layer->getWidth(); ++j) {
                 auto cell = content[i][j];
-                mBackground->setContent(j + layer->getStartColX(), i + layer->getStartRowY(), cell.character, cell.baseColor, cell.effects);
+                mDisplayRect->setContent(j + layer->getStartColX(), i + layer->getStartRowY(), cell.character, cell.baseColor, cell.effects);
             }
         }
+        layer->setIsDisplaying(false);
+        layer->setDirty(false);
     }
-    display(mBackground);
+    display(mDisplayRect);
 }
 
 void TerminalDisplay::displayAll() const {
-    // 隐藏光标
-    cout << "\033[?25l";
     for (auto& layer : mLayers) {
         display(layer);
         moveCursor(startRow, startCol);

@@ -7,11 +7,15 @@
 *   description :
 *
 ================================================================*/
-
+#include <iostream>
+// this_thread
+#include <thread>
 #include "Layer.h"
 
+using namespace std;
+
 Layer::Layer(int width, int height)
-    : mWidth(width), mHeight(height), x(0), y(0) {
+    : mWidth(width), mHeight(height), x(0), y(0), mDirty(false) {
     mContent.resize(height, std::vector<Cell>(width, Cell())); // 初始化为空格、默认颜色和无特殊效果
 }
 
@@ -32,12 +36,22 @@ std::string Layer::getName() const {
 }
 
 void Layer::setContent(int x, int y, char c, Color color, const std::vector<Color>& effects) {
+    // 需要忙等待直到前一帧渲染完成
+    while (getIsDisplaying()) {
+    }
+
     if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) {
         mContent[y][x] = Cell(c, color, effects);  // 存储字符、颜色和特殊效果
     }
+    // 标记应该更新
+    setDirty(true);
 }
 
 void Layer::setContent(int x, int y, const std::string& str, Color color, const std::vector<Color>& effects) {
+    // 需要忙等待直到前一帧渲染完成
+    while (getIsDisplaying()) {
+    }
+
     int strLength = str.length();
 
     // 如果位置越界，直接返回
@@ -53,6 +67,8 @@ void Layer::setContent(int x, int y, const std::string& str, Color color, const 
             break;  // 如果字符超出宽度，停止设置
         }
     }
+    // 标记应该更新
+    setDirty(true);
 }
 
 Cell Layer::getContent(int x, int y) const {
@@ -60,6 +76,14 @@ Cell Layer::getContent(int x, int y) const {
         return mContent[y][x];
     }
     return Cell();  // 返回默认值
+}
+
+void Layer::setDirty(bool dirty) {
+    mDirty = dirty;
+}
+
+bool Layer::getDirty() const {
+    return mDirty;
 }
 
 const std::vector<std::vector<Cell>>& Layer::getContent() const {
@@ -72,6 +96,15 @@ void Layer::clear() {
             mContent[i][j] = Cell();  // 将每一格重置为空格、默认颜色和无效果
         }
     }
+    setDirty(true);
+}
+
+void Layer::setIsDisplaying(bool display) {
+    isDisplaying = display;
+}
+
+bool Layer::getIsDisplaying() const {
+    return isDisplaying;
 }
 
 int Layer::getWidth() const {
