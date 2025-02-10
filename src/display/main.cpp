@@ -61,10 +61,14 @@ int main() {
     // cout << "图层数量：" << terminalDisplay.getLayerCount() << endl;
     // 显示所有图层的内容
     cout << "显示所有图层内容：\n";
-    terminalDisplay.displayAll();
+    // terminalDisplay.displayAll();
 
     // 清空所有图层内容
-    terminalDisplay.clearAll();
+    // terminalDisplay.clearAll();
+
+    // 停止等待用户输入，以便查看结果
+    cout << "按任意键继续..." << endl;
+    getchar();
 
     cout << "\n所有图层内容已清空！\n";
 

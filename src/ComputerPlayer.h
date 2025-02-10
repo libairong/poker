@@ -24,8 +24,5 @@ private:
     vector<Card> searchSingleCards(const vector<Card>& myCards, const Card& lastCard);
     vector<Card> searchMultiSameValueCards(const vector<Card>& myCards, const vector<Card>& lastCards, int cntSameValue);
     vector<Card> searchSequenceCards(const vector<Card>& myCards, int lastValue, int len, int cntSameValue);
-
-    vector<Card *> mCards;
 };
 #endif  // __COMPUTERPLAYER_H__
-

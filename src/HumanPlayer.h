@@ -11,11 +11,11 @@
 #define __HUMANPLAYER_H__
 
 #include "Player.h"
-
+#include "display/Layer.h"
 /**
  * 玩家子类：人类玩家
  */
-class HumanPlayer : public Player {
+class HumanPlayer : public Player, public Layer {
 public:
     HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
     void action(void) override;

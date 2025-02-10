@@ -27,6 +27,7 @@ using namespace std;
 
 class TerminalDisplay {
 public:
+    ~TerminalDisplay();
     // 禁用拷贝构造函数和赋值操作符
     TerminalDisplay(const TerminalDisplay&) = delete;
     TerminalDisplay& operator=(const TerminalDisplay&) = delete;
@@ -34,6 +35,7 @@ public:
     static TerminalDisplay& getInstance();
 
     bool addLayer(shared_ptr<Layer> layer);
+    void overlayAndDisplay();
     void displayAll() const;
     void display(shared_ptr<Layer> layer) const;
     void clearAll();
@@ -45,6 +47,7 @@ private:
     void moveCursor(int row, int col) const;
 
     vector<shared_ptr<Layer>> mLayers;
+    shared_ptr<Layer> mBackground;
     struct winsize w;
     const int rows, cols;
     int startRow = 0;

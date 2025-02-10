@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++20 -Wall -g -O2
 
 # 定义源文件和目标文件
-SRC_DIRS = src src/7g523
+SRC_DIRS = src src/7g523 src/display
 SRC = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.cpp))
 OBJ_DIR = obj
 OBJ = $(SRC:$(SRC_DIRS)/%.cpp=$(OBJ_DIR)/%.o)

@@ -9,19 +9,37 @@
 ================================================================*/
 
 #include "TerminalDisplay.h"
+// 线程相关头文件
+#include <thread>
+#include <chrono>
+using namespace std;
 
 TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
-    auto background = make_shared<Layer>(cols, rows);
-    background->setName("Background");
+    mBackground = make_shared<Layer>(cols, rows);
+    mBackground->setName("Background");
 
     for (int i = 0; i < cols; ++i) {
-        background->setContent(i, 0, to_string(i % 10)[0], Color::WHITE);
+        mBackground->setContent(i, 0, to_string(i % 10)[0], Color::WHITE);
     }
     for (int i = 0; i < rows; ++i) {
-        background->setContent(0, i, to_string(i % 10)[0], Color::WHITE);
+        mBackground->setContent(0, i, to_string(i % 10)[0], Color::WHITE);
     }
-    addLayer(background);
     setStartRowAndCol();
+
+    // 设置一个定时任务，每隔一段时间刷新一次屏幕
+    thread([this] {
+        while (true) {
+            // displayAll();
+            overlayAndDisplay();
+            this_thread::sleep_for(chrono::milliseconds(20));
+        }
+    }).detach();
+}
+
+// 析构函数
+TerminalDisplay::~TerminalDisplay() {
+    // 显示光标
+    cout << "\033[?25h";  
 }
 
 TerminalDisplay& TerminalDisplay::getInstance() {
@@ -39,7 +57,26 @@ bool TerminalDisplay::addLayer(shared_ptr<Layer> layer) {
     return true;
 }
 
+void TerminalDisplay::overlayAndDisplay() {
+    // 清除屏幕
+    mBackground->clear();
+    // 将所有图层叠加到在背景图层上，然后显示出来
+    for (auto& layer : mLayers) {
+        // 将图层内容叠加到背景图层上
+        auto& content = layer->getContent();
+        for (int i = 0; i < layer->getHeight(); ++i) {
+            for (int j = 0; j < layer->getWidth(); ++j) {
+                auto cell = content[i][j];
+                mBackground->setContent(j + layer->getStartColX(), i + layer->getStartRowY(), cell.character, cell.baseColor, cell.effects);
+            }
+        }
+    }
+    display(mBackground);
+}
+
 void TerminalDisplay::displayAll() const {
+    // 隐藏光标
+    cout << "\033[?25l";
     for (auto& layer : mLayers) {
         display(layer);
         moveCursor(startRow, startCol);

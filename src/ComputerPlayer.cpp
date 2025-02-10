@@ -11,6 +11,8 @@ void ComputerPlayer::action(void) {
     }
 
     printf("has per size: %d\n", getCurrentCardNum());
+#if 0
+    // 玩家当前手牌
 
     vector<Card> validCards;
     // 玩家当前手牌
@@ -166,5 +168,5 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
     }
 
     return validCards;
+#endif
 }
-

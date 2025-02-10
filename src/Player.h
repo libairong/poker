@@ -34,6 +34,15 @@ public:
         }
         cout << endl;
     };
+
+    virtual string getCardString() {
+        string str = "";
+        for (const auto& card : mCards) {
+            str += card->toString() + " ";
+        }
+        return str;
+    };
+
     virtual void action(void) = 0;
     virtual int getCurrentCardNum() { return mCurrentCardNum; };
     virtual void setCurrentCardNum(int num) { mCurrentCardNum = num; }
@@ -49,7 +58,10 @@ public:
     virtual void sortCards() {
         // sort(mCards.begin(), mCards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
     };
-private:
+    
+    // 获取玩家手中的牌的引用
+    virtual vector<shared_ptr<Card>>& getCards() { return mCards; }
+
     string mName;
     shared_ptr<Scene> mScene;
     shared_ptr<GameRule> mGameRule;
