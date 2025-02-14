@@ -14,6 +14,6 @@ void HumanPlayer::action(void) {
     printf("i have %d cards\n", getCurrentCardNum());
 
     // 显示手牌
-    setContent(0, 0, getCardString(), Color::RED);
+    // setContent(0, 0, getCardString(), Color::RED);
 
 }

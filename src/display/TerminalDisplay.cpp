@@ -44,7 +44,7 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
 // 析构函数
 TerminalDisplay::~TerminalDisplay() {
     // 显示光标
-    cout << "\033[?25h";  
+    cout << "\033[?25h";
 }
 
 TerminalDisplay& TerminalDisplay::getInstance() {

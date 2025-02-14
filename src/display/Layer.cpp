@@ -16,7 +16,7 @@ using namespace std;
 
 Layer::Layer(int width, int height)
     : mWidth(width), mHeight(height), x(0), y(0), mDirty(false) {
-    mContent.resize(height, std::vector<Cell>(width, Cell())); // 初始化为空格、默认颜色和无特殊效果
+    mContent.resize(height, vector<Cell>(width, Cell())); // 初始化为空格、默认颜色和无特殊效果
 }
 
 Layer::Layer() {}
@@ -24,18 +24,18 @@ Layer::Layer() {}
 void Layer::resize(int width, int height) {
     mWidth = width;
     mHeight = height;
-    mContent.resize(height, std::vector<Cell>(width, Cell()));  // 重新设置大小
+    mContent.resize(height, vector<Cell>(width, Cell()));  // 重新设置大小
 }
 
-void Layer::setName(const std::string& name) {
+void Layer::setName(const string& name) {
     mName = name;
 }
 
-std::string Layer::getName() const {
+string Layer::getName() const {
     return mName;
 }
 
-void Layer::setContent(int x, int y, char c, Color color, const std::vector<Color>& effects) {
+void Layer::setContent(int x, int y, char c, Color color, const vector<Color>& effects) {
     // 需要忙等待直到前一帧渲染完成
     while (getIsDisplaying()) {
     }
@@ -47,7 +47,7 @@ void Layer::setContent(int x, int y, char c, Color color, const std::vector<Colo
     setDirty(true);
 }
 
-void Layer::setContent(int x, int y, const std::string& str, Color color, const std::vector<Color>& effects) {
+void Layer::setContent(int x, int y, const string& str, Color color, const vector<Color>& effects) {
     // 需要忙等待直到前一帧渲染完成
     while (getIsDisplaying()) {
     }
@@ -86,7 +86,7 @@ bool Layer::getDirty() const {
     return mDirty;
 }
 
-const std::vector<std::vector<Cell>>& Layer::getContent() const {
+const vector<vector<Cell>>& Layer::getContent() const {
     return mContent;
 }
 

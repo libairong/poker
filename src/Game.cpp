@@ -9,10 +9,13 @@
 #include "ComputerPlayer.h"
 #include "HumanPlayer.h"
 #include "7g523/GameRule7g523.h"
+#include "display/Layer.h"
+#include "display/TerminalDisplay.h"
 
 Game::Game(int human_num, int computer_num):
     mHuman_num(human_num), mComputer_num(computer_num),
     mPlayersTurn(0) {
+    auto& terminalDisplay = TerminalDisplay::getInstance();
     int currentPlayerIndex = 0;
 
     // 初始化规则参考类
@@ -28,10 +31,14 @@ Game::Game(int human_num, int computer_num):
     shared_ptr<Player> humanPlayer = make_shared<HumanPlayer>("Player",
 		    currentPlayerIndex++, mGameRule, mScene);
     mPlayers.push_back(humanPlayer);
+    shared_ptr<Layer> humanLayer = dynamic_pointer_cast<Layer>(humanPlayer);
+    terminalDisplay.addLayer(humanLayer);
 
     shared_ptr<ComputerPlayer> computerPlayer = make_shared<ComputerPlayer>("Computer",
 		    currentPlayerIndex++, mGameRule, mScene);
     mPlayers.push_back(computerPlayer);
+    shared_ptr<Layer> computerLayer = dynamic_pointer_cast<Layer>(computerPlayer);
+    terminalDisplay.addLayer(computerLayer);
 }
 
 Game::~Game() {
@@ -41,6 +48,7 @@ void Game::start() {
     for (auto player : mPlayers) {
         player->action();
     }
+    getchar();
 #define MAX_ROUND 5
 #if 0
     // 记录下一次是谁先出牌

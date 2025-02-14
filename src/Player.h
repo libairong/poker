@@ -38,7 +38,9 @@ public:
     virtual string getCardString() {
         string str = "";
         for (const auto& card : mCards) {
+            cout << card->toString() << endl;
             str += card->toString() + " ";
+            cout << str << endl;
         }
         return str;
     };
@@ -58,7 +60,7 @@ public:
     virtual void sortCards() {
         // sort(mCards.begin(), mCards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
     };
-    
+
     // 获取玩家手中的牌的引用
     virtual vector<shared_ptr<Card>>& getCards() { return mCards; }
 

@@ -52,7 +52,7 @@ int main() {
     terminalDisplay.addLayer(layer2);
 
     auto a = make_shared<A>();
-    a->setName("class A");
+    a->setName("♦♠");
     a->init();
     a->setStartPosition(20, 5);
     std::shared_ptr<Layer> parentPtr = std::dynamic_pointer_cast<Layer>(a);

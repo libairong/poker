@@ -11,11 +11,12 @@
 #define __COMPUTERPLAYER_H__
 
 #include "Player.h"
+#include "display/Layer.h"
 
 /**
  * 玩家子类：电脑玩家
  */
-class ComputerPlayer : public Player {
+class ComputerPlayer : public Player , public Layer{
 public:
     ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
     void action(void) override;
