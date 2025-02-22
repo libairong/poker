@@ -48,6 +48,7 @@ private:
 
     vector<shared_ptr<Layer>> mLayers;
     shared_ptr<Layer> mDisplayRect;
+    string mDisplayString;  // 合成图层的所有字符串到这里
     struct winsize w;
     const int rows, cols;
     int startRow = 0;

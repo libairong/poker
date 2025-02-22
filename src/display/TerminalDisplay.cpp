@@ -21,6 +21,10 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
     mDisplayRect = make_shared<Layer>(cols, rows);
     mDisplayRect->setName("Background");
     setStartRowAndCol();
+    // 根据终端大小初始化mDisplayString，大小是纯字符串的两倍，要考虑颜色和特效字符所占的空间
+    for (int i = 0; i < rows; ++i) {
+        mDisplayString.insert(mDisplayString.end(), cols * 2, ' ');
+    }
 
     // 设置一个定时任务，每隔一段时间刷新一次屏幕
     thread([this] {
@@ -39,6 +43,7 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
             this_thread::sleep_for(chrono::milliseconds(20));
         }
     }).detach();
+
 }
 
 // 析构函数
@@ -68,12 +73,14 @@ void TerminalDisplay::overlayAndDisplay() {
     // 将所有图层叠加到在背景图层上，然后显示出来
     for (auto& layer : mLayers) {
         layer->setIsDisplaying(true);
-        // 将图层内容叠加到背景图层上
+
+        cout << "显示图层：" << layer->getName() << endl;
+        // 将图层内容叠加到mDisplayString上，并设置颜色和特效
         auto& content = layer->getContent();
         for (int i = 0; i < layer->getHeight(); ++i) {
             for (int j = 0; j < layer->getWidth(); ++j) {
-                auto cell = content[i][j];
-                mDisplayRect->setContent(j + layer->getStartColX(), i + layer->getStartRowY(), cell.character, cell.baseColor, cell.effects);
+                const auto& cell = content[i][j];
+                mDisplayRect->setContent(j + layer->getStartColX(), i + layer->getStartRowY(), cell);
             }
         }
         layer->setIsDisplaying(false);
@@ -96,7 +103,7 @@ void TerminalDisplay::display(shared_ptr<Layer> layer) const {
     for (const auto& row : mContent) {
         moveCursor(displayRow++, displayCol);
         for (const auto& cell : row) {
-            const char c = cell.character;
+            const string c = cell.character;
             const Color color = cell.baseColor;
             const vector<Color>& effects = cell.effects;
 
@@ -113,11 +120,12 @@ void TerminalDisplay::display(shared_ptr<Layer> layer) const {
             if (!effects.empty()) ansiCode += ";";
             ansiCode += to_string(static_cast<int>(color));
 
-            ansiCode += "m" + string(1, c) + "\033[0m";
+            ansiCode += "m" + c + "\033[0m";
 
             cout << ansiCode;
         }
     }
+    cout << endl;
 }
 
 void TerminalDisplay::clearAll() {

@@ -15,7 +15,7 @@
 using namespace std;
 
 Layer::Layer(int width, int height)
-    : mWidth(width), mHeight(height), x(0), y(0), mDirty(false) {
+    : mWidth(width), mHeight(height), x(0), y(0), mDirty(false), isDisplaying(false) {
     mContent.resize(height, vector<Cell>(width, Cell())); // 初始化为空格、默认颜色和无特殊效果
 }
 
@@ -41,18 +41,22 @@ void Layer::setContent(int x, int y, char c, Color color, const vector<Color>& e
     }
 
     if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) {
-        mContent[y][x] = Cell(c, color, effects);  // 存储字符、颜色和特殊效果
+        // 将char 转成string 以便可以存储单个字符
+        string str(1, c);
+        mContent[y][x] = Cell(str, color, effects);  // 存储字符、颜色和特殊效果
     }
     // 标记应该更新
     setDirty(true);
 }
 
+// 自动生成的strlength 仅仅对ascii 有效，要做成可以一个str ，加长度来表示
 void Layer::setContent(int x, int y, const string& str, Color color, const vector<Color>& effects) {
     // 需要忙等待直到前一帧渲染完成
     while (getIsDisplaying()) {
+        cout << __func__ << " busy waiting..." << endl;
     }
 
-    int strLength = str.length();
+    int strLength = str.size();
 
     // 如果位置越界，直接返回
     if (x < 0 || x >= mWidth || y < 0 || y >= mHeight) {
@@ -62,12 +66,42 @@ void Layer::setContent(int x, int y, const string& str, Color color, const vecto
     // 设置字符串的内容
     for (int i = 0; i < strLength; ++i) {
         if (x + i < mWidth) {  // 确保没有越界
-            mContent[y][x + i] = Cell(str[i], color, effects);  // 设置每个字符的内容
+            // 将char 转成string 以便可以存储单个字符
+            string str_c(1, str[i]);
+            mContent[y][x + i] = Cell(str_c, color, effects);  // 设置每个字符的内容
         } else {
             break;  // 如果字符超出宽度，停止设置
         }
     }
     // 标记应该更新
+    setDirty(true);
+}
+
+// 设置cell
+void Layer::setContent(int x, int y, const Cell& cell) {
+    // 需要忙等待直到前一帧渲染完成
+    while (getIsDisplaying()) {
+        cout << __func__ << " busy waiting..." << endl;
+    }
+
+    if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) {
+        mContent[y][x] = cell;  // 设置cell
+    }
+    setDirty(true);
+}
+
+// 编写函数void setContentOutoffAscii(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {});
+// 用于设置非ascii字符
+void Layer::setContentOutofAscii(int x, int y, const string& str, Color color,
+                                const vector<Color>& effects) {
+    // 需要忙等待直到前一帧渲染完成
+    while (getIsDisplaying()) {
+        cout << __func__ << " busy waiting..." << endl;
+    }
+
+    if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) {
+        mContent[y][x] = Cell(str, color, effects);  // 设置字符、颜色和特殊效果
+    }
     setDirty(true);
 }
 

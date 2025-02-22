@@ -22,8 +22,9 @@ public:
     }
 
     void init() {
-        // cout << "init()" << endl;
-        setContent(0, 0, getName(), Color::RED);
+        cout << "init()" << endl;
+        cout << getName() << endl;
+        setContentOutofAscii(0, 0, getName(), Color::RED);
 
     }
 
@@ -52,13 +53,13 @@ int main() {
     terminalDisplay.addLayer(layer2);
 
     auto a = make_shared<A>();
-    a->setName("♦♠");
+    a->setName("♦");
     a->init();
     a->setStartPosition(20, 5);
     std::shared_ptr<Layer> parentPtr = std::dynamic_pointer_cast<Layer>(a);
     terminalDisplay.addLayer(parentPtr);
     // 显示图层数量
-    // cout << "图层数量：" << terminalDisplay.getLayerCount() << endl;
+    cout << "图层数量：" << terminalDisplay.getLayerCount() << endl;
     // 显示所有图层的内容
     cout << "显示所有图层内容：\n";
     // terminalDisplay.displayAll();
@@ -67,11 +68,11 @@ int main() {
     // terminalDisplay.clearAll();
 
     // 停止等待用户输入，以便查看结果
+    // terminalDisplay.overlayAndDisplay();
     cout << "按任意键继续..." << endl;
     getchar();
 
     cout << "\n所有图层内容已清空！\n";
-
 
     return 0;
 }

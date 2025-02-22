@@ -17,6 +17,8 @@
 #include <vector>
 #include <memory>
 
+using namespace std;
+
 // 定义颜色枚举类型
 enum class Color {
     RESET = 0,        // 重置颜色
@@ -63,12 +65,14 @@ enum class Color {
 };
 
 struct Cell {
-    char character;
+    string character;
     Color baseColor;
     std::vector<Color> effects;
 
-    Cell(char c = ' ', Color col = Color::RESET, const std::vector<Color>& eff = {})
-        : character(c), baseColor(col), effects(eff) {}
+    Cell(string s = " ", Color col = Color::RESET, const std::vector<Color>& eff = {})
+        : baseColor(col), effects(eff) {
+            character += s;
+	}
 };
 
 // Layer 类声明
@@ -95,6 +99,12 @@ public:
 
     // 设置指定位置的字符串内容、颜色及效果
     void setContent(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {});
+
+    // 设置cell
+    void setContent(int x, int y, const Cell& cell);
+
+    // 设置非ascii字符
+    void setContentOutofAscii(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {});
 
     // 获取指定位置的字符及效果
     Cell getContent(int x, int y) const;
