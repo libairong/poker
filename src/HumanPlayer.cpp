@@ -2,7 +2,9 @@
 
 HumanPlayer::HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene):
     Player(name, position, gameR, scene),
-    Layer(10,2) {}
+    Layer(0,0) {
+        Layer::setName(name);
+    }
 
 void HumanPlayer::action(void) {
     printf("hello! i am human!\n");
@@ -13,7 +15,16 @@ void HumanPlayer::action(void) {
     }
     printf("i have %d cards\n", getCurrentCardNum());
 
-    // 显示手牌
-    // setContent(0, 0, getCardString(), Color::RED);
+    // 显示手牌，注意有坐标位置
+    int currentCol = 0;
+    int currentRow = 0;
+    setContent(0, 0, "my cards: ", Color::GREEN);
+    for (int i = 0; i < getCurrentCardNum(); ++i) {
+        // cout << mCards[i]->getSuitString() << " " << mCards[i]->getValueString() << endl;
+        Color color = mCards[i]->getSuit() / 2 == 1 ? Color::WHITE : Color::RED;
+        setContentOutofAscii(currentCol++, currentRow, mCards[i]->getSuitString(), color);
+        setContent(currentCol++, currentRow, mCards[i]->getValueString(), color);
+        setContent(currentCol++, currentRow, " ", Color::RESET);
+    }
 
 }

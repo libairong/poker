@@ -14,19 +14,25 @@
 #include <chrono>
 using namespace std;
 
+#define DEBUG_MODE 0
 TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
     // 隐藏光标
     cout << "\033[?25l";
 
     mDisplayRect = make_shared<Layer>(cols, rows);
     mDisplayRect->setName("Background");
+    mDisplayRect->setStartPosition(0, 0);
+
     setStartRowAndCol();
     // 根据终端大小初始化mDisplayString，大小是纯字符串的两倍，要考虑颜色和特效字符所占的空间
+    /*
     for (int i = 0; i < rows; ++i) {
         mDisplayString.insert(mDisplayString.end(), cols * 2, ' ');
     }
+    */
 
     // 设置一个定时任务，每隔一段时间刷新一次屏幕
+#if !DEBUG_MODE
     thread([this] {
         while (true) {
             // 遍历所有图层， 有脏的就更新
@@ -38,11 +44,13 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
                 }
             }
             if (needUpdate) {
+                cout << "更新屏幕" << endl;
                 overlayAndDisplay();
             }
             this_thread::sleep_for(chrono::milliseconds(20));
         }
     }).detach();
+#endif
 
 }
 
@@ -57,10 +65,20 @@ TerminalDisplay& TerminalDisplay::getInstance() {
     return instance;
 }
 
-bool TerminalDisplay::addLayer(shared_ptr<Layer> layer) {
+// 增加一个判断图层是否超出显示范围的函数，如果超过则返回false
+bool TerminalDisplay::layerSizeCheck(shared_ptr<Layer> layer) {
     if (layer->getWidth() + layer->getStartColX() > DISLAY_WIDTH
         || layer->getHeight() + layer->getStartRowY() > DISPLAY_HEIGHT) {
         cout << "图层大小超出显示范围！" << layer->getName() << endl;
+        return false;
+    } else {
+        return true;
+    }
+}
+
+bool TerminalDisplay::addLayer(shared_ptr<Layer> layer) {
+    // 检查图层大小是否超出显示范围
+    if (!layerSizeCheck(layer)) {
         return false;
     }
     mLayers.push_back(layer);
@@ -70,11 +88,23 @@ bool TerminalDisplay::addLayer(shared_ptr<Layer> layer) {
 void TerminalDisplay::overlayAndDisplay() {
     // 清除屏幕
     mDisplayRect->clear();
+#if DEBUG_MODE
+    // 设置背景图层的第一行和第一列内容
+    for (int i = 0; i < mDisplayRect->getWidth(); ++i) {
+        mDisplayRect->setContent(i, 0, to_string(i / 10), Color::GREEN);
+    }
+
+    for (int j = 0; j < mDisplayRect->getHeight(); ++j) {
+        mDisplayRect->setContent(0, j, to_string(j / 10), Color::RED);
+    }
+
+    cout << "图层数量：" << mLayers.size() <<  endl;
+    getchar();
+#endif
     // 将所有图层叠加到在背景图层上，然后显示出来
     for (auto& layer : mLayers) {
         layer->setIsDisplaying(true);
 
-        cout << "显示图层：" << layer->getName() << endl;
         // 将图层内容叠加到mDisplayString上，并设置颜色和特效
         auto& content = layer->getContent();
         for (int i = 0; i < layer->getHeight(); ++i) {

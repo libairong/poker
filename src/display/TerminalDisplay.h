@@ -23,7 +23,7 @@
 using namespace std;
 
 #define DISLAY_WIDTH 80
-#define DISPLAY_HEIGHT 10
+#define DISPLAY_HEIGHT 40
 
 class TerminalDisplay {
 public:
@@ -40,6 +40,7 @@ public:
     void display(shared_ptr<Layer> layer) const;
     void clearAll();
     int getLayerCount() const;
+    bool layerSizeCheck(shared_ptr<Layer> layer);
 
 private:
     TerminalDisplay();

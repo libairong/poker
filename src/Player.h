@@ -38,9 +38,7 @@ public:
     virtual string getCardString() {
         string str = "";
         for (const auto& card : mCards) {
-            cout << card->toString() << endl;
             str += card->toString() + " ";
-            cout << str << endl;
         }
         return str;
     };

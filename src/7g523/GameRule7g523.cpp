@@ -20,9 +20,9 @@ GameRule7g523Helper::GameRule7g523Helper() {
 }
 
 bool GameRule7g523Helper::cardCompare(const Card& a, const Card& b) {
-    if (a.get_value() == b.get_value())
+    if (a.getValue() == b.getValue())
         return a.getSuit() > b.getSuit();
-    return cardRankRule[a.get_value()] > cardRankRule[b.get_value()];
+    return cardRankRule[a.getValue()] > cardRankRule[b.getValue()];
 }
 
 bool GameRule7g523Helper::cardValueCompare(int valueA, int valueB) {
@@ -40,10 +40,10 @@ CombinateType GameRule7g523Helper::cardsType(const vector<Card>& cards) {
         return CombinateType::THREE;
     } else if (lastCount == 4) {
         return CombinateType::FOUR;
-    } else if (lastCount == 5 && cards[4].get_value() - cards[3].get_value() == 1
-                              && cards[3].get_value() - cards[2].get_value() == 1
-                              && cards[2].get_value() - cards[1].get_value() == 1
-                              && cards[1].get_value() - cards[0].get_value() == 1) {
+    } else if (lastCount == 5 && cards[4].getValue() - cards[3].getValue() == 1
+                              && cards[3].getValue() - cards[2].getValue() == 1
+                              && cards[2].getValue() - cards[1].getValue() == 1
+                              && cards[1].getValue() - cards[0].getValue() == 1) {
         return CombinateType::STRAIGHT;
     } else if (lastCount == 5 && cards[4].getSuit() == cards[3].getSuit()
                               && cards[3].getSuit() == cards[2].getSuit()

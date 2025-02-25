@@ -28,15 +28,20 @@ Game::Game(int human_num, int computer_num):
     /**
      * 初始化玩家列表
      */
-    shared_ptr<Player> humanPlayer = make_shared<HumanPlayer>("Player",
+    shared_ptr<HumanPlayer> humanPlayer = make_shared<HumanPlayer>("Player",
 		    currentPlayerIndex++, mGameRule, mScene);
     mPlayers.push_back(humanPlayer);
+    // 调用父类的resize方法，设置玩家位置和大小
+    humanPlayer->resize(30, 5);
+    humanPlayer->setStartPosition(0, 35);
     shared_ptr<Layer> humanLayer = dynamic_pointer_cast<Layer>(humanPlayer);
     terminalDisplay.addLayer(humanLayer);
 
     shared_ptr<ComputerPlayer> computerPlayer = make_shared<ComputerPlayer>("Computer",
 		    currentPlayerIndex++, mGameRule, mScene);
     mPlayers.push_back(computerPlayer);
+    computerPlayer->resize(30, 5);
+    computerPlayer->setStartPosition(0, 30);
     shared_ptr<Layer> computerLayer = dynamic_pointer_cast<Layer>(computerPlayer);
     terminalDisplay.addLayer(computerLayer);
 }
@@ -49,6 +54,7 @@ void Game::start() {
         player->action();
     }
     getchar();
+
 #define MAX_ROUND 5
 #if 0
     // 记录下一次是谁先出牌

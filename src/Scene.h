@@ -32,12 +32,13 @@ public:
         // 四种花色
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 13; j++) {
-		shared_ptr<Card> card = make_shared<Card>(i, j);
+                // i 为花色，j 为牌值
+		        shared_ptr<Card> card = make_shared<Card>(static_cast<Suit>(i), j);
                 mResourceCards.push_back(card);
             }
         }
-        mResourceCards.push_back(make_shared<Card>(2, LITTLE_JOKER_VALUE)); // 小王
-        mResourceCards.push_back(make_shared<Card>(3, BIG_JOKER_VALUE)); // 大王
+        mResourceCards.push_back(make_shared<Card>(static_cast<Suit>(2), LITTLE_JOKER_VALUE)); // 小王
+        mResourceCards.push_back(make_shared<Card>(static_cast<Suit>(3), BIG_JOKER_VALUE)); // 大王
         srand((unsigned int)time(NULL));
         random_shuffle(mResourceCards.begin(), mResourceCards.end());
     };

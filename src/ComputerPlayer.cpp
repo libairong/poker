@@ -1,7 +1,9 @@
 #include "ComputerPlayer.h"
 
 ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene):
-    Player(name, position, gameR, scene), Layer(10, 2) {}
+    Player(name, position, gameR, scene), Layer(0, 0) {
+        Layer::setName(name);
+    }
 
 // 根据场上已有牌和上一个玩家的出牌
 void ComputerPlayer::action(void) {
@@ -13,7 +15,7 @@ void ComputerPlayer::action(void) {
 
     printf("has per size: %d\n", getCurrentCardNum());
     // cout << getCardString() << endl;
-    setContent(1, 0, getCardString(), Color::RED);
+    // setContentOutofAscii(1, 0, getCardString(), Color::RED);
 #if 0
     // 玩家当前手牌
 
