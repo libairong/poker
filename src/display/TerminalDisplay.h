@@ -48,6 +48,7 @@ private:
     TerminalDisplay();
     void setStartRowAndCol();
     void moveCursor(int row, int col) const;
+    void fillDisplayRect();
 
     vector<shared_ptr<Layer>> mLayers;
     shared_ptr<Layer> mDisplayRect;

@@ -22,6 +22,9 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
     mDisplayRect = make_shared<Layer>(cols, rows);
     mDisplayRect->setName("Background");
     mDisplayRect->setStartPosition(0, 0);
+    // offline display
+    fillDisplayRect();
+    addLayer(mDisplayRect);
 
     setStartRowAndCol();
     // 根据终端大小初始化mDisplayString，大小是纯字符串的两倍，要考虑颜色和特效字符所占的空间
@@ -45,7 +48,8 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
             }
             if (needUpdate) {
                 cout << "更新屏幕" << endl;
-                overlayAndDisplay();
+                // overlayAndDisplay();
+                displayAll();
             }
             this_thread::sleep_for(chrono::milliseconds(20));
             if (shouldExit) {
@@ -100,16 +104,7 @@ bool TerminalDisplay::addLayer(shared_ptr<Layer> layer) {
 void TerminalDisplay::overlayAndDisplay() {
     // 清除屏幕
     mDisplayRect->clear();
-#if 1
-    // 设置背景图层的第一行和第一列内容
-    for (int i = 0; i < mDisplayRect->getWidth(); ++i) {
-        mDisplayRect->setContent(i, 0, to_string(i / 10), Color::GREEN);
-    }
-
-    for (int j = 0; j < mDisplayRect->getHeight(); ++j) {
-        mDisplayRect->setContent(0, j, to_string(j / 10), Color::RED);
-    }
-#endif
+    fillDisplayRect();
     // 将所有图层叠加到在背景图层上，然后显示出来
     for (auto& layer : mLayers) {
         layer->setIsDisplaying(true);
@@ -130,8 +125,10 @@ void TerminalDisplay::overlayAndDisplay() {
 
 void TerminalDisplay::displayAll() const {
     for (auto& layer : mLayers) {
+        layer->setIsDisplaying(true);
         display(layer);
-        moveCursor(startRow, startCol);
+        layer->setIsDisplaying(false);
+        layer->setDirty(false);
     }
 }
 
@@ -140,6 +137,7 @@ void TerminalDisplay::display(shared_ptr<Layer> layer) const {
     int displayCol = layer->getStartColX() + startCol;
     auto& mContent = layer->getContent();
     for (const auto& row : mContent) {
+        moveCursor(startRow, startCol);
         moveCursor(displayRow++, displayCol);
         for (const auto& cell : row) {
             const string c = cell.character;
@@ -201,3 +199,15 @@ void TerminalDisplay::stopDisplay() {
         }
     }
 }
+
+void TerminalDisplay::fillDisplayRect() {
+    // 设置背景图层的第一行和第一列内容
+    for (int i = 0; i < mDisplayRect->getWidth(); ++i) {
+        mDisplayRect->setContent(i, 0, to_string(i / 10), Color::GREEN);
+    }
+
+    for (int j = 0; j < mDisplayRect->getHeight(); ++j) {
+        mDisplayRect->setContent(0, j, to_string(j / 10), Color::RED);
+    }
+}
+
