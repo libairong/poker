@@ -42,6 +42,7 @@ public:
     void clearAll();
     int getLayerCount() const;
     bool layerSizeCheck(shared_ptr<Layer> layer);
+    void stopDisplay();
 
 private:
     TerminalDisplay();
@@ -55,6 +56,8 @@ private:
     int rows, cols;
     int startRow = 0;
     int startCol = 0;
+    bool shouldExit = false;
+    bool isStop = false;
 };
 
 #endif // TERMINAL_DISPLAY_H

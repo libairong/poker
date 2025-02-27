@@ -57,6 +57,8 @@ void Game::start() {
     }
     getchar();
 
+    TerminalDisplay::getInstance().stopDisplay();
+
 #define MAX_ROUND 5
 #if 0
     // 记录下一次是谁先出牌

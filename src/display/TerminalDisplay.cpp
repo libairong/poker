@@ -48,6 +48,10 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
                 overlayAndDisplay();
             }
             this_thread::sleep_for(chrono::milliseconds(20));
+            if (shouldExit) {
+                isStop = true;
+                break;
+            }
         }
     }).detach();
 #endif
@@ -186,4 +190,14 @@ void TerminalDisplay::setStartRowAndCol() {
 
 void TerminalDisplay::moveCursor(int row, int col) const {
     cout << "\033[" << row << ";" << col << "H";
+}
+
+void TerminalDisplay::stopDisplay() {
+    shouldExit = true;
+
+    while (true) {
+        if (isStop) {
+            break;
+        }
+    }
 }
