@@ -33,6 +33,7 @@ public:
     TerminalDisplay& operator=(const TerminalDisplay&) = delete;
 
     static TerminalDisplay& getInstance();
+    void reinitDisplayRect(int width, int height);
 
     bool addLayer(shared_ptr<Layer> layer);
     void overlayAndDisplay();
@@ -51,7 +52,7 @@ private:
     shared_ptr<Layer> mDisplayRect;
     string mDisplayString;  // 合成图层的所有字符串到这里
     struct winsize w;
-    const int rows, cols;
+    int rows, cols;
     int startRow = 0;
     int startCol = 0;
 };

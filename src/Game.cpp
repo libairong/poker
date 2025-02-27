@@ -16,6 +16,7 @@ Game::Game(int human_num, int computer_num):
     mHuman_num(human_num), mComputer_num(computer_num),
     mPlayersTurn(0) {
     auto& terminalDisplay = TerminalDisplay::getInstance();
+    terminalDisplay.reinitDisplayRect(80, 10);
     int currentPlayerIndex = 0;
 
     // 初始化规则参考类
@@ -28,22 +29,23 @@ Game::Game(int human_num, int computer_num):
     /**
      * 初始化玩家列表
      */
-    shared_ptr<HumanPlayer> humanPlayer = make_shared<HumanPlayer>("Player",
+    shared_ptr<HumanPlayer> humanPlayer = make_shared<HumanPlayer>("humanPlayer",
 		    currentPlayerIndex++, mGameRule, mScene);
     mPlayers.push_back(humanPlayer);
     // 调用父类的resize方法，设置玩家位置和大小
-    humanPlayer->resize(30, 5);
-    humanPlayer->setStartPosition(0, 35);
+    humanPlayer->resize(40, 2);
+    humanPlayer->setStartPosition(20, 8);
     shared_ptr<Layer> humanLayer = dynamic_pointer_cast<Layer>(humanPlayer);
     terminalDisplay.addLayer(humanLayer);
 
-    shared_ptr<ComputerPlayer> computerPlayer = make_shared<ComputerPlayer>("Computer",
+    shared_ptr<ComputerPlayer> computerPlayer = make_shared<ComputerPlayer>("PlayerA",
 		    currentPlayerIndex++, mGameRule, mScene);
     mPlayers.push_back(computerPlayer);
-    computerPlayer->resize(30, 5);
-    computerPlayer->setStartPosition(0, 30);
+    computerPlayer->resize(20, 1);
+    computerPlayer->setStartPosition(0, 5);
     shared_ptr<Layer> computerLayer = dynamic_pointer_cast<Layer>(computerPlayer);
     terminalDisplay.addLayer(computerLayer);
+    
 }
 
 Game::~Game() {

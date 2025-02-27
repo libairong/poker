@@ -54,6 +54,14 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
 
 }
 
+// resetDisplayRect函数用于重置背景图层的大小
+void TerminalDisplay::reinitDisplayRect(int width, int height) {
+    mDisplayRect->resize(width, height);
+    rows = height;
+    cols = width;
+    setStartRowAndCol();
+}
+
 // 析构函数
 TerminalDisplay::~TerminalDisplay() {
     // 显示光标
@@ -88,7 +96,7 @@ bool TerminalDisplay::addLayer(shared_ptr<Layer> layer) {
 void TerminalDisplay::overlayAndDisplay() {
     // 清除屏幕
     mDisplayRect->clear();
-#if DEBUG_MODE
+#if 1
     // 设置背景图层的第一行和第一列内容
     for (int i = 0; i < mDisplayRect->getWidth(); ++i) {
         mDisplayRect->setContent(i, 0, to_string(i / 10), Color::GREEN);
@@ -97,9 +105,6 @@ void TerminalDisplay::overlayAndDisplay() {
     for (int j = 0; j < mDisplayRect->getHeight(); ++j) {
         mDisplayRect->setContent(0, j, to_string(j / 10), Color::RED);
     }
-
-    cout << "图层数量：" << mLayers.size() <<  endl;
-    getchar();
 #endif
     // 将所有图层叠加到在背景图层上，然后显示出来
     for (auto& layer : mLayers) {
@@ -176,7 +181,7 @@ void TerminalDisplay::setStartRowAndCol() {
     }
 
     startRow = w.ws_row - rows;
-    startCol = 0;
+    startCol = w.ws_col / 3;
 }
 
 void TerminalDisplay::moveCursor(int row, int col) const {

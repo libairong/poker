@@ -47,7 +47,7 @@ public:
     virtual int getCurrentCardNum() { return mCurrentCardNum; };
     virtual void setCurrentCardNum(int num) { mCurrentCardNum = num; }
     virtual int  getMaxCardNum() { return mMaxCardNum; }
-    virtual string getName() { return mName; }
+    string getName() { return mName; }
     virtual int getPosition() { return mPosition; }
     // 从牌堆里摸牌
     virtual void addCard(void) {
