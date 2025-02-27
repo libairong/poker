@@ -33,33 +33,6 @@ TerminalDisplay::TerminalDisplay() : rows(DISPLAY_HEIGHT), cols(DISLAY_WIDTH) {
         mDisplayString.insert(mDisplayString.end(), cols * 2, ' ');
     }
     */
-
-    // 设置一个定时任务，每隔一段时间刷新一次屏幕
-#if !DEBUG_MODE
-    thread([this] {
-        while (true) {
-            // 遍历所有图层， 有脏的就更新
-            bool needUpdate = false;
-            for (auto& layer : mLayers) {
-                if (layer->getDirty()) {
-                    needUpdate = true;
-                    break;
-                }
-            }
-            if (needUpdate) {
-                cout << "更新屏幕" << endl;
-                // overlayAndDisplay();
-                displayAll();
-            }
-            this_thread::sleep_for(chrono::milliseconds(20));
-            if (shouldExit) {
-                isStop = true;
-                break;
-            }
-        }
-    }).detach();
-#endif
-
 }
 
 // resetDisplayRect函数用于重置背景图层的大小
@@ -74,6 +47,7 @@ void TerminalDisplay::reinitDisplayRect(int width, int height) {
 TerminalDisplay::~TerminalDisplay() {
     // 显示光标
     cout << "\033[?25h";
+    moveCursor(w.ws_row, 0);
 }
 
 TerminalDisplay& TerminalDisplay::getInstance() {
@@ -211,3 +185,34 @@ void TerminalDisplay::fillDisplayRect() {
     }
 }
 
+// 设置一个定时任务，每隔一段时间刷新一次屏幕
+bool TerminalDisplay::startDisplay() {
+#if !DEBUG_MODE
+    thread([this] {
+        while (true) {
+            // 遍历所有图层， 有脏的就更新
+            bool needUpdate = false;
+            for (auto& layer : mLayers) {
+                if (layer->getDirty()) {
+                    needUpdate = true;
+                    break;
+                }
+            }
+            if (needUpdate) {
+                cout << "更新屏幕" << endl;
+                // overlayAndDisplay();
+                displayAll();
+            }
+            this_thread::sleep_for(chrono::milliseconds(20));
+            if (shouldExit) {
+                isStop = true;
+                break;
+            }
+        }
+    }).detach();
+#else
+    overlayAndDisplay();
+#endif
+
+    return true;
+}

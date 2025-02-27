@@ -75,6 +75,13 @@ struct Cell {
 	}
 };
 
+/**
+ * 注意：
+ *    1. 字符的宽度默认为1，如果要设置非ascii字符（如中文、表情等），则需要调用setContentOutofAscii函数
+ *    2. 字符的颜色默认为RESET，即默认颜色，如果要设置颜色，则需要调用setContent函数
+ *    3. 字符串只需要确定起点，后面的字符串只需要cols 加1 即可，在显示的时候自动接上。不过这个有显示引擎决定，图层这里就是这么约定
+ */
+
 // Layer 类声明
 class Layer : public std::enable_shared_from_this<Layer> {
 public:

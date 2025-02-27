@@ -55,6 +55,7 @@ void Game::start() {
     for (auto player : mPlayers) {
         player->action();
     }
+    TerminalDisplay::getInstance().startDisplay();
     getchar();
 
     TerminalDisplay::getInstance().stopDisplay();

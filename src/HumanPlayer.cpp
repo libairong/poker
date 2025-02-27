@@ -14,10 +14,11 @@ void HumanPlayer::action(void) {
         addCard();
     }
     printf("i have %d cards\n", getCurrentCardNum());
+    cout << "my cards: " << getCardString() << endl;
 
     // 显示手牌，注意有坐标位置
     int currentCol = 0;
-    int currentRow = 0;
+    int currentRow = 1;
     setContent(0, 0, "my cards: ", Color::GREEN);
     for (int i = 0; i < getCurrentCardNum(); ++i) {
         // cout << mCards[i]->getSuitString() << " " << mCards[i]->getValueString() << endl;

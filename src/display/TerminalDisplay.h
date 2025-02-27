@@ -43,6 +43,7 @@ public:
     int getLayerCount() const;
     bool layerSizeCheck(shared_ptr<Layer> layer);
     void stopDisplay();
+    bool startDisplay();
 
 private:
     TerminalDisplay();
