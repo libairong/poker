@@ -111,7 +111,7 @@ public:
     void setContent(int x, int y, const Cell& cell);
 
     // 设置非ascii字符
-    void setContentOutofAscii(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {});
+    void setContentString(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {});
 
     // 获取指定位置的字符及效果
     Cell getContent(int x, int y) const;

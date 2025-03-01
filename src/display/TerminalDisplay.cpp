@@ -132,8 +132,15 @@ void TerminalDisplay::display(shared_ptr<Layer> layer) const {
             ansiCode += to_string(static_cast<int>(color));
 
             ansiCode += "m" + c + "\033[0m";
-
             cout << ansiCode;
+#if 0
+            // 判断c 是不是空字符串，如果是空字符串，不需要另外打印，只需要复位颜色
+            if (c.empty()) {
+                cout << ansiCode << "m " << "\033[0m";
+            } else {
+                cout << ansiCode << "m" << c << "\033[0m";
+           }
+#endif
         }
     }
     cout << endl;

@@ -24,7 +24,7 @@ public:
     void init() {
         cout << "init()" << endl;
         cout << getName() << endl;
-        setContentOutofAscii(0, 0, getName(), Color::RED);
+        setContentString(0, 0, getName(), Color::RED);
 
     }
 

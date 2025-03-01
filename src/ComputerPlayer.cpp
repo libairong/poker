@@ -15,7 +15,7 @@ void ComputerPlayer::action(void) {
 
     printf("has per size: %d\n", getCurrentCardNum());
     // cout << getCardString() << endl;
-    // setContentOutofAscii(1, 0, getCardString(), Color::RED);
+    // setContentString(1, 0, getCardString(), Color::RED);
     setContent(0, 0, Player::getName() + " card num: " + to_string(getCurrentCardNum()), Color::GREEN);
 #if 0
     // 玩家当前手牌
