@@ -69,7 +69,7 @@ struct Cell {
     Color baseColor;
     std::vector<Color> effects;
 
-    Cell(string s = " ", Color col = Color::RESET, const std::vector<Color>& eff = {})
+    Cell(string s = "", Color col = Color::RESET, const std::vector<Color>& eff = {})
         : baseColor(col), effects(eff) {
             character += s;
 	}
@@ -140,6 +140,9 @@ public:
     void setIsDisplaying(bool display);
     // 获取是否显示
     bool getIsDisplaying() const;
+    // 绘制边框，可以设置边框的起始坐标、宽度和高度，以及边框的颜色，默认为白色边框
+    void drawBorder(int x = 0, int y = 0, int width = 1, int height = 1, Color color = Color::BRIGHT_WHITE,
+                    const std::vector<Color>& effects = {});
 
 private:
     int mWidth, mHeight;  // 图层的宽度和高度

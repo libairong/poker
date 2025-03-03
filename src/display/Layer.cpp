@@ -105,6 +105,25 @@ void Layer::setContentString(int x, int y, const string& str, Color color,
     setDirty(true);
 }
 
+// 绘制边框
+void Layer::drawBorder(int x, int y, int width, int height, Color color, const vector<Color>& effects) {
+    // 需要忙等待直到前一帧渲染完成
+    while (getIsDisplaying()) {
+        cout << __func__ << " busy waiting..." << endl;
+    }
+    // 根据宽度和高度绘制边框
+    for (int i = x; i < x + width; ++i) {
+        setContent(i, y, '+', color, effects);  // 上边框
+        setContent(i, y + height - 1, '+', color, effects);  // 下边框
+    }
+    for (int j = y; j < y + height; ++j) {
+        setContent(x, j, '+', color, effects);  // 左边框
+        setContent(x + width - 1, j, '+', color, effects);  // 右边框
+    }
+
+    setDirty(true);
+}
+
 Cell Layer::getContent(int x, int y) const {
     if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) {
         return mContent[y][x];
@@ -161,3 +180,4 @@ int Layer::getStartRowY() const {
 int Layer::getStartColX() const {
     return x;
 }
+

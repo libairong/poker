@@ -16,7 +16,15 @@ void ComputerPlayer::action(void) {
     printf("has per size: %d\n", getCurrentCardNum());
     // cout << getCardString() << endl;
     // setContentString(1, 0, getCardString(), Color::RED);
-    setContent(0, 0, Player::getName() + " card num: " + to_string(getCurrentCardNum()), Color::GREEN);
+    static int rectangleInitFlag = 0;
+    if (rectangleInitFlag == 0) {
+        rectangleInitFlag = 1;
+        drawBorder(0, 0, 20, 4, Color::WHITE, {Color::BOLD});
+    }
+    setContentString(1, 1, Player::getName(), Color::WHITE);
+    setContentString(1, 2, "手牌数: " + to_string(getCurrentCardNum()), Color::WHITE);
+    setContentString(2, 2, "得分: 0", Color::WHITE);
+
 #if 0
     // 玩家当前手牌
 

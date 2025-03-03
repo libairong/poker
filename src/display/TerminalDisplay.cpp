@@ -111,12 +111,21 @@ void TerminalDisplay::display(shared_ptr<Layer> layer) const {
     int displayCol = layer->getStartColX() + startCol;
     auto& mContent = layer->getContent();
     for (const auto& row : mContent) {
-        moveCursor(startRow, startCol);
-        moveCursor(displayRow++, displayCol);
+        moveCursor(displayRow, displayCol);
+
+        // 增加变量，用于记录当前行的字符数
+        long unsigned int currentCell = 0;
         for (const auto& cell : row) {
             const string c = cell.character;
             const Color color = cell.baseColor;
             const vector<Color>& effects = cell.effects;
+
+            // 如果这是一行的最后一个字符，先需要移动光标到这里，确保打印位置正常
+            if (currentCell == (row.size() - 1)) {
+                    // cout << "in the last cell of the row, move cursor to: " << displayRow << ", " << currentCell + displayCol << "\n";
+                    moveCursor(displayRow, currentCell + displayCol);
+            }
+            // cout << "currentCell: " << currentCell << "\n";
 
             string ansiCode = "\033[";
 
@@ -133,15 +142,11 @@ void TerminalDisplay::display(shared_ptr<Layer> layer) const {
 
             ansiCode += "m" + c + "\033[0m";
             cout << ansiCode;
-#if 0
-            // 判断c 是不是空字符串，如果是空字符串，不需要另外打印，只需要复位颜色
-            if (c.empty()) {
-                cout << ansiCode << "m " << "\033[0m";
-            } else {
-                cout << ansiCode << "m" << c << "\033[0m";
-           }
-#endif
+
+            currentCell++;
         }
+
+        displayRow++;
     }
     cout << endl;
 }

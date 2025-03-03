@@ -17,14 +17,13 @@ void HumanPlayer::action(void) {
     cout << "my cards: " << getCardString() << endl;
 
     // 显示手牌，注意有坐标位置
-    int currentCol = 0;
+    int currentCol = 5;
     int currentRow = 1;
-    setContent(0, 0, "my cards: ", Color::WHITE);
+    setContent(currentCol, 0, "my cards: ", Color::WHITE);
     for (int i = 0; i < getCurrentCardNum(); ++i) {
         // cout << mCards[i]->getSuitString() << " " << mCards[i]->getValueString() << endl;
         Color color = mCards[i]->getSuit() % 2 == 1 ? Color::WHITE : Color::RED;
-        setContentString(currentCol++, currentRow, mCards[i]->getSuitString(), color);
-        setContentString(currentCol++, currentRow, mCards[i]->getValueString(), color);
+        setContentString(currentCol++, currentRow, mCards[i]->getSuitString() + mCards[i]->getValueString(), color);
         setContentString(currentCol++, currentRow, " ", Color::RESET);
     }
 
