@@ -23,6 +23,8 @@ using namespace std;
 enum class Color {
     RESET = 0,        // 重置颜色
     // 前景色
+    DEFAULT = 39,     // 默认颜色
+    BLACK = 30,       // 黑色
     RED = 31,         // 红色
     GREEN = 32,       // 绿色
     YELLOW = 33,      // 黄色
@@ -38,7 +40,9 @@ enum class Color {
     BRIGHT_CYAN = 96, // 亮青色
     BRIGHT_WHITE = 97,// 亮白色
 
+    // 都是背景色，都是effect，都可以在函数后面加。如：setContent(1, 1, "hello", Color::RED, {Color::BG_GREEN, Color::BOLD});
     // 背景色
+    BG_DEFAULT = 49,    // 背景色 默认颜色
     BG_BLACK = 40,    // 背景色 黑色
     BG_RED = 41,      // 背景色 红色
     BG_GREEN = 42,    // 背景色 绿色
@@ -64,14 +68,29 @@ enum class Color {
     INVISIBLE = 8      // 隐藏
 };
 
+// Cell 结构体声明
 struct Cell {
     string character;
     Color baseColor;
     std::vector<Color> effects;
+    // 增加显示前景色和背景色的灰度的变量，范围是0-24
+    int fgGray;
+    int bgGray;
 
-    Cell(string s = "", Color col = Color::RESET, const std::vector<Color>& eff = {})
+    Cell(string s = "", Color col = Color::RESET, const std::vector<Color>& eff = {}, int fg = 23, int bg = 0)
         : baseColor(col), effects(eff) {
             character += s;
+
+            // 设置前景色和背景色的灰度
+            fgGray = fg;
+            bgGray = bg;
+            if (fg < 0) fgGray = 0;
+            if (fg > 23) fgGray = 23;
+
+            if (bg < 0) bgGray = 0;
+            if (bg > 23) bgGray = 23;
+
+
 	}
 };
 

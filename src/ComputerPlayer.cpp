@@ -19,7 +19,7 @@ void ComputerPlayer::action(void) {
     static int rectangleInitFlag = 0;
     if (rectangleInitFlag == 0) {
         rectangleInitFlag = 1;
-        drawBorder(0, 0, 20, 4, Color::WHITE, {Color::BOLD});
+        drawBorder(0, 0, 20, 4, Color::WHITE, {Color::BG_DEFAULT, Color::BG_WHITE});
     }
     setContentString(1, 1, Player::getName(), Color::WHITE);
     setContentString(1, 2, "手牌数: " + to_string(getCurrentCardNum()), Color::WHITE);

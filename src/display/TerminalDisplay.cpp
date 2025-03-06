@@ -127,8 +127,17 @@ void TerminalDisplay::display(shared_ptr<Layer> layer) const {
             }
             // cout << "currentCell: " << currentCell << "\n";
 
-            string ansiCode = "\033[";
+            string ansiCode = "";
 
+            // 设置前景色和背景色灰度
+            ansiCode += "\033[38;5;";
+            ansiCode += to_string(cell.fgGray + 232);
+            ansiCode += "m";
+            ansiCode += "\033[;48;5;";
+            ansiCode += to_string(cell.bgGray + 232);
+            ansiCode += "m";
+
+            ansiCode += "\033[";
             bool first = true;
 
             for (const auto& effect : effects) {

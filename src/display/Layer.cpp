@@ -113,12 +113,12 @@ void Layer::drawBorder(int x, int y, int width, int height, Color color, const v
     }
     // 根据宽度和高度绘制边框
     for (int i = x; i < x + width; ++i) {
-        setContent(i, y, '+', color, effects);  // 上边框
-        setContent(i, y + height - 1, '+', color, effects);  // 下边框
+        setContent(i, y, '-', color, effects);  // 上边框
+        setContent(i, y + height - 1, '-', color, effects);  // 下边框
     }
     for (int j = y; j < y + height; ++j) {
-        setContent(x, j, '+', color, effects);  // 左边框
-        setContent(x + width - 1, j, '+', color, effects);  // 右边框
+        setContent(x, j, '|', color, effects);  // 左边框
+        setContent(x + width - 1, j, '|', color, effects);  // 右边框
     }
 
     setDirty(true);
