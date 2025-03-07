@@ -33,8 +33,8 @@ Game::Game(int human_num, int computer_num):
 		    currentPlayerIndex++, mGameRule, mScene);
     mPlayers.push_back(humanPlayer);
     // 调用父类的resize方法，设置玩家位置和大小
-    humanPlayer->resize(40, 4);
-    humanPlayer->setStartPosition(20, 8);
+    humanPlayer->resize(40, 2);
+    humanPlayer->setStartPosition(25, 8);
     shared_ptr<Layer> humanLayer = dynamic_pointer_cast<Layer>(humanPlayer);
     terminalDisplay.addLayer(humanLayer);
 

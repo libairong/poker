@@ -77,7 +77,7 @@ struct Cell {
     int fgGray;
     int bgGray;
 
-    Cell(string s = "", Color col = Color::RESET, const std::vector<Color>& eff = {}, int fg = 23, int bg = 0)
+    Cell(string s = "", Color col = Color::RESET, const std::vector<Color>& eff = {}, int fg = 0, int bg = 0)
         : baseColor(col), effects(eff) {
             character += s;
 

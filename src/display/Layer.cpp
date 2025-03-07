@@ -111,14 +111,23 @@ void Layer::drawBorder(int x, int y, int width, int height, Color color, const v
     while (getIsDisplaying()) {
         cout << __func__ << " busy waiting..." << endl;
     }
-    // 根据宽度和高度绘制边框
-    for (int i = x; i < x + width; ++i) {
-        setContent(i, y, '-', color, effects);  // 上边框
-        setContent(i, y + height - 1, '-', color, effects);  // 下边框
-    }
-    for (int j = y; j < y + height; ++j) {
-        setContent(x, j, '|', color, effects);  // 左边框
-        setContent(x + width - 1, j, '|', color, effects);  // 右边框
+    // 根据宽度和高度绘制边框, 如果是上下四个角，设置为'+'  如果是边框但不是角，设置为'-'或'|'
+    for (int i = 0; i < width; ++i) {
+        for (int j = 0; j < height; ++j) {
+            if (i == 0 && j == 0) {
+                setContent(x + i, y + j, '+', color, effects);
+            } else if (i == 0 && j == height - 1) {
+                setContent(x + i, y + j, '+', color, effects);
+            } else if (i == width - 1 && j == 0) {
+                setContent(x + i, y + j, '+', color, effects);
+            } else if (i == width - 1 && j == height - 1) {
+                setContent(x + i, y + j, '+', color, effects);
+            } else if (i == 0 || i == width - 1) {
+                setContent(x + i, y + j, '|', color, effects);
+            } else if (j == 0 || j == height - 1) {
+                setContent(x + i, y + j, '-', color, effects);
+            }
+        }
     }
 
     setDirty(true);
