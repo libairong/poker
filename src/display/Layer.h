@@ -120,6 +120,7 @@ public:
     // 获取图层名字
     std::string getName() const;
 
+    /* 以下三个函数尽量不要用！！ */
     // 设置指定位置的字符、颜色及效果
     void setContent(int x, int y, char c, Color color = Color::RESET, const std::vector<Color>& effects = {});
 
@@ -129,7 +130,9 @@ public:
     // 设置cell
     void setContent(int x, int y, const Cell& cell);
 
-    // 设置非ascii字符
+    /* 推荐用这个函数*/
+    // 设置非ascii字符，字符串只需要确定起点，后面的字符串只需要cols 加1 即可，在显示的时候自动接上。不过这个有显示引擎决定，图层这里就是这么约定
+    // 每行的x 实际打印只会从0开始，设置x 无效。
     void setContentString(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {});
 
     // 获取指定位置的字符及效果

@@ -196,6 +196,12 @@ void TerminalDisplay::stopDisplay() {
 }
 
 void TerminalDisplay::fillDisplayRect() {
+    // 设置背景图层全是空格和黑色
+    for (int i = 0; i < mDisplayRect->getWidth(); ++i) {
+        for (int j = 0; j < mDisplayRect->getHeight(); ++j) {
+            mDisplayRect->setContent(i, j, ' ', Color::BLACK);
+        }
+    }
     // 设置背景图层的第一行和第一列内容
     for (int i = 0; i < mDisplayRect->getWidth(); ++i) {
         mDisplayRect->setContent(i, 0, to_string(i / 10), Color::GREEN);
@@ -220,7 +226,7 @@ bool TerminalDisplay::startDisplay() {
                 }
             }
             if (needUpdate) {
-                cout << "更新屏幕" << endl;
+                // cout << "更新屏幕" << endl;
                 // overlayAndDisplay();
                 displayAll();
             }

@@ -7,13 +7,13 @@ ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<GameRule> g
 
 // 根据场上已有牌和上一个玩家的出牌
 void ComputerPlayer::action(void) {
-    printf("hello! i am computer!\n");
+    // printf("hello! i am computer!\n");
 
     while (getCurrentCardNum() < getMaxCardNum()) {
         addCard();
     }
 
-    printf("has per size: %d\n", getCurrentCardNum());
+    // printf("has per size: %d\n", getCurrentCardNum());
     // cout << getCardString() << endl;
     // setContentString(1, 0, getCardString(), Color::RED);
     static int rectangleInitFlag = 0;
@@ -23,7 +23,7 @@ void ComputerPlayer::action(void) {
     }
     setContentString(1, 1, Player::getName(), Color::WHITE);
     setContentString(1, 2, "手牌数: " + to_string(getCurrentCardNum()), Color::WHITE);
-    setContentString(2, 2, "得分: 0", Color::WHITE);
+    setContentString(2, 2, "得分: " + to_string(getScore()), Color::WHITE);
 
 #if 0
     // 玩家当前手牌

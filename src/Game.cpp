@@ -16,7 +16,7 @@ Game::Game(int human_num, int computer_num):
     mHuman_num(human_num), mComputer_num(computer_num),
     mPlayersTurn(0) {
     auto& terminalDisplay = TerminalDisplay::getInstance();
-    terminalDisplay.reinitDisplayRect(80, 10);
+    // terminalDisplay.reinitDisplayRect(80, 10);
     int currentPlayerIndex = 0;
 
     // 初始化规则参考类
@@ -25,6 +25,12 @@ Game::Game(int human_num, int computer_num):
     // 初始化场景
     mScene = make_shared<Scene>();
     mScene->initResourceCards();
+
+    // 初始化场景层
+    mScene->resize(60, 8);
+    mScene->setStartPosition(20, 0);
+    shared_ptr<Layer> sceneLayer = dynamic_pointer_cast<Layer>(mScene);
+    terminalDisplay.addLayer(sceneLayer);
 
     /**
      * 初始化玩家列表
@@ -52,14 +58,18 @@ Game::~Game() {
 }
 
 void Game::start() {
-    for (auto player : mPlayers) {
-        player->action();
-    }
+    // 开始游戏
     TerminalDisplay::getInstance().startDisplay();
-    getchar();
+    while (true) {
+        for (auto player : mPlayers) {
+            player->action();
+            mScene->freshAndDisplay();
+            sleep(1);
+        }
+        break;
+    }
 
     TerminalDisplay::getInstance().stopDisplay();
-
 #define MAX_ROUND 5
 #if 0
     // 记录下一次是谁先出牌

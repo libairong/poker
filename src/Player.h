@@ -11,6 +11,7 @@
 #include "debug.h"
 
 using namespace std;
+class Scene;
 /**
  * 玩家基类
  */
@@ -50,17 +51,17 @@ public:
     string getName() { return mName; }
     virtual int getPosition() { return mPosition; }
     // 从牌堆里摸牌
-    virtual void addCard(void) {
-        shared_ptr<Card> card = mScene->takeCard();
-        mCards.push_back(card);
-        mCurrentCardNum = mCards.size();
-    };
+    void addCard(void);
     virtual void sortCards() {
         // sort(mCards.begin(), mCards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
     };
 
     // 获取玩家手中的牌的引用
     virtual vector<shared_ptr<Card>>& getCards() { return mCards; }
+    // 分数
+    virtual int getScore() { return mScore; }
+    // 设置分数
+    virtual void setScore(int score) { mScore = score; }
 
     string mName;
     shared_ptr<Scene> mScene;
@@ -69,5 +70,6 @@ public:
     int mMaxCardNum = 0;
     int mPosition = 0;
     vector<shared_ptr<Card>> mCards;
+    int mScore = 0;
 };
 #endif  // __PLAYER_H__

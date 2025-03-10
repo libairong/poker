@@ -23,7 +23,7 @@
 using namespace std;
 
 #define DISLAY_WIDTH 80
-#define DISPLAY_HEIGHT 40
+#define DISPLAY_HEIGHT 10
 
 class TerminalDisplay {
 public:
