@@ -4,6 +4,7 @@ HumanPlayer::HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, 
     Player(name, position, gameR, scene),
     Layer(0,0) {
         Layer::setName(name);
+        mBoardInput = make_shared<BoardInput>();
     }
 
 void HumanPlayer::action(void) {

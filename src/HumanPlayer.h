@@ -12,6 +12,8 @@
 
 #include "Player.h"
 #include "display/Layer.h"
+#include "BoardInput.h"
+
 /**
  * 玩家子类：人类玩家
  */
@@ -19,5 +21,9 @@ class HumanPlayer : public Player, public Layer {
 public:
     HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
     void action(void) override;
+
+private:
+    shared_ptr<BoardInput> mBoardInput;
 };
+
 #endif  // __HUMANPLAYER_H__
