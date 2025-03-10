@@ -23,7 +23,7 @@ void ComputerPlayer::action(void) {
     }
     setContentString(1, 1, Player::getName(), Color::WHITE);
     setContentString(1, 2, "手牌数: " + to_string(getCurrentCardNum()), Color::WHITE);
-    setContentString(2, 2, "得分: " + to_string(getScore()), Color::WHITE);
+    setContentString(2, 2, " 得分: " + to_string(getScore()), Color::WHITE);
 
 #if 0
     // 玩家当前手牌

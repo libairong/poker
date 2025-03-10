@@ -17,9 +17,9 @@ void HumanPlayer::action(void) {
     // cout << "my cards: " << getCardString() << endl;
 
     // 显示手牌，注意有坐标位置
-    int currentCol = 5;
+    int currentCol = 0;
     int currentRow = 1;
-    setContentString(currentCol, 0, "my cards: ", Color::WHITE);
+    setContentString(currentCol++, currentRow, "    ", Color::WHITE);
     for (int i = 0; i < getCurrentCardNum(); ++i) {
         // cout << mCards[i]->getSuitString() << " " << mCards[i]->getValueString() << endl;
         Color color = mCards[i]->getSuit() % 2 == 1 ? Color::WHITE : Color::RED;
@@ -27,4 +27,5 @@ void HumanPlayer::action(void) {
         setContentString(currentCol++, currentRow, " ", Color::RESET);
     }
 
+    setContentString(currentCol++, currentRow, "    得分: " + to_string(getScore()), Color::WHITE);
 }
