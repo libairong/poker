@@ -1,4 +1,3 @@
-#include "Game.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -6,6 +5,7 @@
 #include <ctime>
 #include <cstring>
 
+#include "Game.h"
 #include "ComputerPlayer.h"
 #include "HumanPlayer.h"
 #include "7g523/GameRule7g523.h"
@@ -20,7 +20,7 @@ Game::Game(int human_num, int computer_num):
     int currentPlayerIndex = 0;
 
     // 初始化规则参考类
-    mGameRule = make_shared<GameRule7g523Helper>();
+    mGameFlow = make_shared<GameRule7g523Helper>();
 
     // 初始化场景
     mScene = make_shared<Scene>();
@@ -36,7 +36,7 @@ Game::Game(int human_num, int computer_num):
      * 初始化玩家列表
      */
     shared_ptr<HumanPlayer> humanPlayer = make_shared<HumanPlayer>("humanPlayer",
-		    currentPlayerIndex++, mGameRule, mScene);
+		    currentPlayerIndex++, mGameFlow, mScene);
     mPlayers.push_back(humanPlayer);
     // 调用父类的resize方法，设置玩家位置和大小
     humanPlayer->resize(40, 2);
@@ -45,7 +45,7 @@ Game::Game(int human_num, int computer_num):
     terminalDisplay.addLayer(humanLayer);
 
     shared_ptr<ComputerPlayer> computerPlayer = make_shared<ComputerPlayer>("PlayerA",
-		    currentPlayerIndex++, mGameRule, mScene);
+		    currentPlayerIndex++, mGameFlow, mScene);
     mPlayers.push_back(computerPlayer);
     computerPlayer->resize(20, 4);
     computerPlayer->setStartPosition(0, 5);
@@ -58,7 +58,7 @@ Game::~Game() {
 }
 
 void Game::start() {
-    // 开始游戏
+    // 开始游戏，这里应由GameFlow的规则轮盘决定游戏流程
     TerminalDisplay::getInstance().startDisplay();
     while (true) {
         for (auto player : mPlayers) {

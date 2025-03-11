@@ -9,15 +9,18 @@
 ================================================================*/
 #ifndef __GAMERULE7G523HELPER_H__
 #define __GAMERULE7G523HELPER_H__
+#include "../GameFlow.h"
 
-#include "../GameRule.h"
-
-class GameRule7g523Helper : public GameRule {
+class GameRule7g523Helper : public GameFlow {
 public:
     GameRule7g523Helper();
-    bool cardCompare(const Card& a, const Card& b) override;
-    bool cardValueCompare(int valueA, int valueB) override;
+    bool cardCompare(const Card& a, const Card& b);
+    bool cardValueCompare(int valueA, int valueB);
     CombinateType cardsType(const vector<Card>& cards);
+
+    // 实现GameFlow接口
+    void StartFlow() override;
+    void EndFlow() override;
 
 private:
     map<int, int> cardRankRule;

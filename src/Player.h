@@ -7,69 +7,41 @@
 #include <memory>
 #include "Card.h"
 #include "Scene.h"
-#include "GameRule.h"
+#include "GameFlow.h"
 #include "debug.h"
 
 using namespace std;
 class Scene;
+class GameFlow;
 /**
  * 玩家基类
  */
 class Player {
 public:
-    Player(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene):
-        mName(name),
-        mCurrentCardNum(0),
-        mMaxCardNum(5) {
-        mPosition = position;
-        mGameRule.reset();
-        mGameRule = gameR;
-        mScene = scene;
-    }
+    Player(string name, int position, shared_ptr<GameFlow> gameF, shared_ptr<Scene> scene);
     virtual ~Player() {}  // 将析构函数声明为虚函数
-    virtual void printCards() {
-        cout << "[" << mName << "] ";
-        for (const auto& card : mCards) {
-            card->print();
-            cout << " ";
-        }
-        cout << endl;
-    };
-
-    virtual string getCardString() {
-        string str = "";
-        for (const auto& card : mCards) {
-            str += card->toString() + " ";
-        }
-        return str;
-    };
-
+    virtual void printCards() final;
+    virtual string getCardString() final;
     virtual void action(void) = 0;
-    virtual int getCurrentCardNum() { return mCurrentCardNum; };
-    virtual void setCurrentCardNum(int num) { mCurrentCardNum = num; }
-    virtual int  getMaxCardNum() { return mMaxCardNum; }
-    string getName() { return mName; }
-    virtual int getPosition() { return mPosition; }
-    // 从牌堆里摸牌
+    virtual int getCurrentCardNum() final;
+    virtual void setCurrentCardNum(int num) final;
+    virtual int getMaxCardNum() final;
+    virtual string getName() final;
+    virtual int getPosition() final;
     void addCard(void);
-    virtual void sortCards() {
-        // sort(mCards.begin(), mCards.end(), [this](Card& a, Card& b) { return gameRule->cardCompare(a, b); });
-    };
+    virtual void sortCards();
+    virtual vector<shared_ptr<Card>>& getCards() final;
+    virtual int getScore() final;
+    virtual void setScore(int score) final;
 
-    // 获取玩家手中的牌的引用
-    virtual vector<shared_ptr<Card>>& getCards() { return mCards; }
-    // 分数
-    virtual int getScore() { return mScore; }
-    // 设置分数
-    virtual void setScore(int score) { mScore = score; }
-
+protected:
     string mName;
     shared_ptr<Scene> mScene;
-    shared_ptr<GameRule> mGameRule;
-    int mCurrentCardNum = 0;
-    int mMaxCardNum = 0;
-    int mPosition = 0;
+    shared_ptr<GameFlow> mGameFlow;
+    int mCurrentCardNum;
+    int mMaxCardNum;
+    int mPosition;
     vector<shared_ptr<Card>> mCards;
-    int mScore = 0;
+    int mScore;
 };
 #endif  // __PLAYER_H__

@@ -1,7 +1,7 @@
 #include "HumanPlayer.h"
 
-HumanPlayer::HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene):
-    Player(name, position, gameR, scene),
+HumanPlayer::HumanPlayer(string name, int position, shared_ptr<GameFlow> gameF, shared_ptr<Scene> scene):
+    Player(name, position, gameF, scene),
     Layer(0,0) {
         Layer::setName(name);
         mBoardInput = make_shared<BoardInput>();

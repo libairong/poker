@@ -18,7 +18,7 @@
  */
 class ComputerPlayer : public Player , public Layer {
 public:
-    ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
+    ComputerPlayer(string name, int position, shared_ptr<GameFlow> gameR, shared_ptr<Scene> scene);
     void action(void) override;
 private:
     vector<Card> getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards);

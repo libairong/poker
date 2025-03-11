@@ -19,7 +19,7 @@
  */
 class HumanPlayer : public Player, public Layer {
 public:
-    HumanPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene);
+    HumanPlayer(string name, int position, shared_ptr<GameFlow> gameF, shared_ptr<Scene> scene);
     void action(void) override;
 
 private:

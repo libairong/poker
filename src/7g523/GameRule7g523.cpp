@@ -56,4 +56,10 @@ CombinateType GameRule7g523Helper::cardsType(const vector<Card>& cards) {
     }
 }
 
+void GameRule7g523Helper::StartFlow() {
+    cout << "GameRule7g523Helper::StartFlow" << endl;
+}
 
+void GameRule7g523Helper::EndFlow() {
+    cout << "GameRule7g523Helper::EndFlow" << endl;
+}

@@ -1,6 +1,6 @@
 #include "ComputerPlayer.h"
 
-ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<GameRule> gameR, shared_ptr<Scene> scene):
+ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<GameFlow> gameR, shared_ptr<Scene> scene):
     Player(name, position, gameR, scene), Layer(0, 0) {
         Layer::setName(name);
     }
@@ -79,12 +79,12 @@ void ComputerPlayer::action(void) {
 vector<Card> ComputerPlayer::searchSingleCards(const vector<Card>& myCards, const Card& lastCard) {
     vector<Card> validCards;
 
-    if (!gameRule->cardCompare(myCards[0], lastCard))
+    if (!GameFlow->cardCompare(myCards[0], lastCard))
         return validCards;
 
     for (int i = 0; i < (int)myCards.size(); i++) {
         // 这里替换成规则判断
-        if (gameRule->cardCompare(myCards[i], lastCard)) {
+        if (GameFlow->cardCompare(myCards[i], lastCard)) {
             validCards.push_back(myCards[i]);
         }
     }
@@ -94,13 +94,13 @@ vector<Card> ComputerPlayer::searchSingleCards(const vector<Card>& myCards, cons
 // 查找对子、三张、四张
 vector<Card> ComputerPlayer::searchMultiSameValueCards(const vector<Card>& myCards, const vector<Card>& lastCards, int cntSameValue) {
     vector<Card> validCards;
-    if ((int)myCards.size() < cntSameValue || !gameRule->cardCompare(myCards[myCards.size() - 1], lastCards[0])) {
+    if ((int)myCards.size() < cntSameValue || !GameFlow->cardCompare(myCards[myCards.size() - 1], lastCards[0])) {
         return validCards;
     }
 
     for (int i = 0; i < (int)myCards.size(); i++) {
         // 首先，牌数值要大于或等于lastCards
-        if (!gameRule->cardValueCompare(myCards[i].get_value(), lastCards[0].get_value())
+        if (!GameFlow->cardValueCompare(myCards[i].get_value(), lastCards[0].get_value())
             || myCards[i].get_value() != lastCards[0].get_value())
             continue;
 
@@ -108,7 +108,7 @@ vector<Card> ComputerPlayer::searchMultiSameValueCards(const vector<Card>& myCar
             if (cntSameValue == 2 && myCards[i].get_value() == lastCards[i].get_value()) {
                 // 同数值对子
                 Card::getSameValueCards(&myCards, myCards[i].get_value(), &validCards);
-                if (!gameRule->cardCompare(validCards[validCards.size() - 1], lastCards[lastCards.size() - 1])) {
+                if (!GameFlow->cardCompare(validCards[validCards.size() - 1], lastCards[lastCards.size() - 1])) {
                     validCards.clear();
                 }
             } else {
@@ -158,7 +158,7 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
         }
     } else {
         // 判断上家出牌类型
-        CombinateType combinationType = gameRule->cardsType(lastDisposedCards);
+        CombinateType combinationType = GameFlow->cardsType(lastDisposedCards);
         // printf("combinationType: %d \n", combinationType);
 
         // 根据当前场上的牌组合类型选择可以出的牌

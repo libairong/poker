@@ -9,7 +9,7 @@
 #include "Card.h"
 #include "Player.h"
 #include "Scene.h"
-#include "GameRule.h"
+#include "GameFlow.h"
 #include "debug.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ private:
 
     vector<shared_ptr<Player>> mPlayers;
     shared_ptr<Scene> mScene;
-    shared_ptr<GameRule> mGameRule;
+    shared_ptr<GameFlow> mGameFlow;
 
     int mHuman_num;
     int mComputer_num;
