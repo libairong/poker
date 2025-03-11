@@ -51,7 +51,15 @@ Game::Game(int human_num, int computer_num):
     computerPlayer->setStartPosition(0, 5);
     shared_ptr<Layer> computerLayer = dynamic_pointer_cast<Layer>(computerPlayer);
     terminalDisplay.addLayer(computerLayer);
-    
+
+    // 将玩家添加到规则参考类
+    mGameFlow->setPlayers(mPlayers);
+
+#if 0
+    Player::printPlayersInfo(mPlayers);
+    Player::printPlayersInfo(mGameFlow->getPlayers());
+#endif
+
 }
 
 Game::~Game() {

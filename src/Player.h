@@ -34,6 +34,9 @@ public:
     virtual int getScore() final;
     virtual void setScore(int score) final;
 
+    // 添加一个静态的方法，用于DEBUG，打印所有玩家的信息
+    static void printPlayersInfo(const vector<shared_ptr<Player>>& players);
+
 protected:
     string mName;
     shared_ptr<Scene> mScene;

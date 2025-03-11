@@ -26,6 +26,10 @@ public:
     void AddPlayer(shared_ptr<Player> player);
     // 玩家离开游戏
     void RemovePlayer(shared_ptr<Player> player);
+    // 获取玩家列表
+    vector<shared_ptr<Player>>& getPlayers();
+    // 设置玩家列表
+    void setPlayers(const vector<shared_ptr<Player>>& players);
     // 玩家列表
     vector<shared_ptr<Player>> mPlayers;
 };

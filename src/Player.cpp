@@ -93,3 +93,10 @@ int Player::getScore() {
 void Player::setScore(int score) {
     mScore = score;
 }
+
+// 添加一个静态的方法，用于DEBUG，打印所有玩家的信息
+void Player::printPlayersInfo(const vector<shared_ptr<Player>>& players) {
+    for (const auto& player : players) {
+        cout << "Player: " << player->getName() << " Score: " << player->getScore() << endl;
+    }
+}

@@ -21,3 +21,12 @@ void GameFlow::RemovePlayer(shared_ptr<Player> player) {
     mPlayers.erase(remove(mPlayers.begin(), mPlayers.end(), player), mPlayers.end());
 }
 
+// 获取玩家列表 vector<shared_ptr<Player>>& getPlayers() const;
+vector<shared_ptr<Player>>& GameFlow::getPlayers() {
+    return mPlayers;
+}
+
+// 设置玩家列表
+void GameFlow::setPlayers(const vector<shared_ptr<Player>>& players) {
+    mPlayers = players;
+}
