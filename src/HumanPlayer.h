@@ -13,14 +13,17 @@
 #include "Player.h"
 #include "display/Layer.h"
 #include "BoardInput.h"
+#include "7g523/GameActions.h"
 
 /**
  * 玩家子类：人类玩家
  */
-class HumanPlayer : public Player, public Layer {
+class HumanPlayer : public Player, public Layer, public GameActions {
 public:
-    HumanPlayer(string name, int position, shared_ptr<GameFlow> gameF, shared_ptr<Scene> scene);
+    HumanPlayer(string name, int position, shared_ptr<Scene> scene);
     void action(void) override;
+    void addCard(void) override;
+    void playCard(void) override;
 
 private:
     shared_ptr<BoardInput> mBoardInput;

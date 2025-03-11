@@ -12,14 +12,17 @@
 
 #include "Player.h"
 #include "display/Layer.h"
+#include "7g523/GameActions.h"
 
 /**
  * 玩家子类：电脑玩家
  */
-class ComputerPlayer : public Player , public Layer {
+class ComputerPlayer : public Player , public Layer, public GameActions {
 public:
-    ComputerPlayer(string name, int position, shared_ptr<GameFlow> gameR, shared_ptr<Scene> scene);
+    ComputerPlayer(string name, int position, shared_ptr<Scene> scene);
     void action(void) override;
+    void addCard(void) override;
+    void playCard(void) override;
 private:
     vector<Card> getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards);
     vector<Card> searchSingleCards(const vector<Card>& myCards, const Card& lastCard);

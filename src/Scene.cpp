@@ -90,3 +90,8 @@ void Scene::freshAndDisplay() {
     // 6. 显示玩家不出牌
     // 7. 显示玩家不要
 }
+
+// addPlayedCards
+void Scene::addPlayedCards(const shared_ptr<PlayedCards>& playedCards) {
+    mPlayedCards.push_back(playedCards);
+}

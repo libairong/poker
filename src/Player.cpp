@@ -15,10 +15,9 @@
 using namespace std;
 
 // 构造函数
-Player::Player(string name, int position, shared_ptr<GameFlow> gameF, shared_ptr<Scene> scene)
+Player::Player(string name, int position, shared_ptr<Scene> scene)
     : mName(name),
       mScene(scene),
-      mGameFlow(gameF),
       mCurrentCardNum(0),
       mMaxCardNum(5),
       mPosition(position),
@@ -66,12 +65,6 @@ string Player::getName() {
 // 获取玩家位置
 int Player::getPosition() {
     return mPosition;
-}
-
-void Player::addCard(void) {
-    shared_ptr<Card> card = mScene->takeCard();
-    mCards.push_back(card);
-    mCurrentCardNum = mCards.size();
 }
 
 // 对手中牌进行排序

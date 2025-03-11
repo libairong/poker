@@ -29,6 +29,7 @@ public:
     void setPlayers(const std::vector<std::shared_ptr<Player>>& players);
     std::shared_ptr<Player> getPlayerByNumber(int number);
     void freshAndDisplay();
+    void addPlayedCards(const std::shared_ptr<PlayedCards>& playedCards);
 
 private:
     std::vector<std::shared_ptr<Card>> mResourceCards;

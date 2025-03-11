@@ -1,7 +1,7 @@
 #include "HumanPlayer.h"
 
-HumanPlayer::HumanPlayer(string name, int position, shared_ptr<GameFlow> gameF, shared_ptr<Scene> scene):
-    Player(name, position, gameF, scene),
+HumanPlayer::HumanPlayer(string name, int position, shared_ptr<Scene> scene):
+    Player(name, position, scene),
     Layer(0,0) {
         Layer::setName(name);
         mBoardInput = make_shared<BoardInput>();
@@ -29,4 +29,14 @@ void HumanPlayer::action(void) {
     }
 
     setContentString(currentCol++, currentRow, "    得分: " + to_string(getScore()), Color::WHITE);
+}
+
+void HumanPlayer::addCard(void) {
+    shared_ptr<Card> card = mScene->takeCard();
+    mCards.push_back(card);
+    mCurrentCardNum = mCards.size();
+}
+
+void HumanPlayer::playCard(void) {
+    
 }

@@ -36,7 +36,7 @@ Game::Game(int human_num, int computer_num):
      * 初始化玩家列表
      */
     shared_ptr<HumanPlayer> humanPlayer = make_shared<HumanPlayer>("humanPlayer",
-		    currentPlayerIndex++, mGameFlow, mScene);
+		    currentPlayerIndex++, mScene);
     mPlayers.push_back(humanPlayer);
     // 调用父类的resize方法，设置玩家位置和大小
     humanPlayer->resize(40, 2);
@@ -45,7 +45,7 @@ Game::Game(int human_num, int computer_num):
     terminalDisplay.addLayer(humanLayer);
 
     shared_ptr<ComputerPlayer> computerPlayer = make_shared<ComputerPlayer>("PlayerA",
-		    currentPlayerIndex++, mGameFlow, mScene);
+		    currentPlayerIndex++, mScene);
     mPlayers.push_back(computerPlayer);
     computerPlayer->resize(20, 4);
     computerPlayer->setStartPosition(0, 5);

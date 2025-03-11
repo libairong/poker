@@ -1,7 +1,7 @@
 #include "ComputerPlayer.h"
 
-ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<GameFlow> gameR, shared_ptr<Scene> scene):
-    Player(name, position, gameR, scene), Layer(0, 0) {
+ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<Scene> scene):
+    Player(name, position, scene), Layer(0, 0) {
         Layer::setName(name);
     }
 
@@ -183,4 +183,15 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
 
     return validCards;
 #endif
+}
+
+// 添加一张牌
+void ComputerPlayer::addCard(void) {
+    shared_ptr<Card> card = mScene->takeCard();
+    mCards.push_back(card);
+    mCurrentCardNum = mCards.size();
+}
+// 玩家出牌
+void ComputerPlayer::playCard(void) {
+    
 }
