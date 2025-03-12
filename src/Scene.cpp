@@ -125,3 +125,8 @@ void Scene::setChanged(bool isChanged) {
 bool Scene::isChanged() const {
     return mIsChanged;
 }
+
+// 增加一个公告显示函数，用于显示公告类的信息
+void Scene::showNotice(const string& notice) {
+    setContentString(0, 5, notice, Color::WHITE);
+}

@@ -9,10 +9,6 @@
 using namespace std;
 class Player;
 
-enum CombinateType {
-    SINGLE, PAIR, THREE, FOUR, STRAIGHT, SINGLE_SUIT
-};
-
 // 规则类，提供卡牌列表、提供卡牌大小比较功能
 class GameFlow {
 public:

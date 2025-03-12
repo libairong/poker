@@ -35,6 +35,9 @@ public:
     void setChanged(bool isChanged);
     bool isChanged() const;
 
+    // 增加一个公告显示函数，用于显示公告类的信息
+    void showNotice(const std::string& notice);
+
 private:
     std::vector<std::shared_ptr<Card>> mResourceCards;
     std::vector<std::shared_ptr<PlayedCards>> mPlayedCards;

@@ -3,7 +3,7 @@
 ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<Scene> scene):
     Player(name, position, scene), Layer(0, 0) {
         Layer::setName(name);
-    }
+}
 
 // 根据场上已有牌和上一个玩家的出牌
 void ComputerPlayer::action(void) {
@@ -12,18 +12,6 @@ void ComputerPlayer::action(void) {
     while (getCurrentCardNum() < getMaxCardNum()) {
         addCard();
     }
-
-    // printf("has per size: %d\n", getCurrentCardNum());
-    // cout << getCardString() << endl;
-    // setContentString(1, 0, getCardString(), Color::RED);
-    static int rectangleInitFlag = 0;
-    if (rectangleInitFlag == 0) {
-        rectangleInitFlag = 1;
-        drawBorder(0, 0, 20, 4, Color::WHITE);
-    }
-    setContentString(1, 1, Player::getName(), Color::WHITE);
-    setContentString(1, 2, "手牌数: " + to_string(getCurrentCardNum()), Color::WHITE);
-    setContentString(2, 2, " 得分: " + to_string(getScore()), Color::WHITE);
 
 #if 0
     // 玩家当前手牌
@@ -193,9 +181,21 @@ void ComputerPlayer::addCard(void) {
     }
     mCards.push_back(card);
     mCurrentCardNum = mCards.size();
+
+    drawBorder(0, 0, 20, 4, Color::WHITE);  // 只执行一次就可以
+    setContentString(1, 1, Player::getName(), Color::WHITE);
+    setContentString(1, 2, "手牌数: " + to_string(mCurrentCardNum), Color::WHITE);
+}
+
+//  显示最小的牌
+void ComputerPlayer::showMinCard(void) {
+    // 显示最小的牌
+    if (mCards.size() > 0) {
+        mCards[0]->print();
+    }
 }
 
 // 玩家出牌
 void ComputerPlayer::playCard(void) {
-    
+    setContentString(2, 2, " 得分: " + to_string(getScore()), Color::WHITE);
 }

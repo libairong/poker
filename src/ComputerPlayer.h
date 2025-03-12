@@ -22,6 +22,7 @@ public:
     ComputerPlayer(string name, int position, shared_ptr<Scene> scene);
     void action(void) override;
     void addCard(void) override;
+    void showMinCard(void) override;
     void playCard(void) override;
 private:
     vector<Card> getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards);

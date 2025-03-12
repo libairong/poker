@@ -7,4 +7,7 @@
 因为unicode 字符的实际打印长度不知道，所以设置cell 的时候，都要用setContentString 函数，然后无论设置哪个x 开始，打印效果都是从0开始。
 所以，都从0开始设，递增。
 
+## 静态变量map<int, int> 的初始化问题
+GameRule7g523 的cardRank 在构造函数里面调用insert 函数后会报段错误，
+但是在调用insert 前调用clear 函数，再insert 就正常了！！！（原因未明）
 

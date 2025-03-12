@@ -38,8 +38,30 @@ void HumanPlayer::addCard(void) {
     }
     mCards.push_back(card);
     mCurrentCardNum = mCards.size();
+
+    clear();
+    // 显示手牌，注意有坐标位置
+    int currentCol = 0;
+    int currentRow = 1;
+    setContentString(currentCol++, currentRow, "    ", Color::WHITE);
+    for (int i = 0; i < getCurrentCardNum(); ++i) {
+        // cout << mCards[i]->getSuitString() << " " << mCards[i]->getValueString() << endl;
+        Color color = mCards[i]->getSuit() % 2 == 1 ? Color::WHITE : Color::RED;
+        setContentString(currentCol++, currentRow, mCards[i]->getSuitString() + mCards[i]->getValueString(), color);
+        setContentString(currentCol++, currentRow, " ", Color::RESET);
+    }
+    setContentString(currentCol++, currentRow, "    得分: " + to_string(getScore()), Color::WHITE);
+}
+
+void HumanPlayer::showMinCard(void) {
+    // 显示最小的牌
+    if (mCards.size() > 0) {
+        mCards[0]->print();
+    }
 }
 
 void HumanPlayer::playCard(void) {
+
+    setContentString(6, 1, "    得分: " + to_string(getScore()), Color::WHITE);
     
 }

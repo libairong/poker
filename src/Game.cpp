@@ -71,17 +71,7 @@ void Game::start() {
     TerminalDisplay::getInstance().startDisplay();
     // 启动游戏流程
     mGameFlow->startFlow();
-    while (0) {
-        for (auto player : mPlayers) {
-            player->action();
-            mScene->freshAndDisplay();
-            sleep(1);
-        }
-        break;
-    }
 
-    sleep(1);
-    TerminalDisplay::getInstance().stopDisplay();
 #define MAX_ROUND 5
 #if 0
     // 记录下一次是谁先出牌

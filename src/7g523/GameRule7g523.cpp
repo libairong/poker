@@ -1,8 +1,12 @@
 #include "GameRule7g523.h"
 #include "GameActions.h"
 
+// 实例化静态成员变量 cardRankRule，设置为一个空的map，用于存储牌的规则。
+map<int, int> GameRule7g523Helper::cardRankRule;
+
 GameRule7g523Helper::GameRule7g523Helper() {
-    //  Card::value -> Rank
+    //  Card::value -> Rank(数值越大在牌的规则里对应的牌就越大)
+    cardRankRule.clear();
     cardRankRule.insert({14, 13});  // 大王, 第二大
     cardRankRule.insert({13, 12});
     cardRankRule.insert({12, 7});
@@ -95,6 +99,7 @@ bool GameRule7g523Helper::isGameOver() {
 }
 
 void GameRule7g523Helper::startFlow() {
+    mScene->showNotice("    游戏开始!!!  ");
     while (true && !mIsStopGame) {
         drawCard();
         mScene->freshAndDisplay();

@@ -11,12 +11,18 @@
 #define __GAMERULE7G523HELPER_H__
 #include "../GameFlow.h"
 
+enum CombinateType {
+    SINGLE, PAIR, THREE, FOUR, STRAIGHT, SINGLE_SUIT
+};
+
 class GameRule7g523Helper : public GameFlow {
 public:
     GameRule7g523Helper();
-    bool cardCompare(const Card& a, const Card& b);
-    bool cardValueCompare(int valueA, int valueB);
-    CombinateType cardsType(const vector<Card>& cards);
+    static bool cardCompare(const Card& a, const Card& b);
+    static bool cardValueCompare(int valueA, int valueB);
+    static CombinateType cardsType(const vector<Card>& cards);
+    // 增加一个静态函数，用于给牌排序
+    static void sortCards(vector<Card>& cards);
 
     // 实现GameFlow接口
     void startFlow() override;
@@ -32,7 +38,7 @@ private:
     // 比较两张牌的大小
     bool compareCards(const Card& card1, const Card& card2);
 
-    map<int, int> cardRankRule;
+    static map<int, int> cardRankRule;
     // 是否需要停止游戏
     bool mIsStopGame = false;
 };
