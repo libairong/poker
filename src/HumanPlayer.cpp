@@ -33,6 +33,9 @@ void HumanPlayer::action(void) {
 
 void HumanPlayer::addCard(void) {
     shared_ptr<Card> card = mScene->takeCard();
+    if (card == nullptr) {
+        return;
+    }
     mCards.push_back(card);
     mCurrentCardNum = mCards.size();
 }

@@ -1,4 +1,5 @@
 #include "GameRule7g523.h"
+#include "GameActions.h"
 
 GameRule7g523Helper::GameRule7g523Helper() {
     //  Card::value -> Rank
@@ -56,11 +57,57 @@ CombinateType GameRule7g523Helper::cardsType(const vector<Card>& cards) {
     }
 }
 
-void GameRule7g523Helper::StartFlow() {
-    cout << "GameRule7g523Helper::StartFlow" << endl;
-    
+// 玩家轮流抽牌到最大手牌数
+void GameRule7g523Helper::drawCard() {
+    // 轮流抽牌，每次轮到玩家，玩家仅仅抽一张牌。直到所有玩家手牌数达到最大值。
+    while (mScene->getRemainCardNum() > 0) {
+        bool isMaxHandCard = true;  // 记录是否还有人摸牌，如果有玩家摸牌，则继续循环。如果没有就是都摸满了
+        for (const auto& player : mPlayers) {
+            if (player->getCurrentCardNum() < player->getMaxCardNum()) {
+                // player 转成GameActions 子类，然后再调用addCard()方法
+                // cout << player->getName() << "抽牌" << endl;
+                dynamic_pointer_cast<GameActions>(player)->addCard();
+                isMaxHandCard = false;
+            }
+        }
+        if (isMaxHandCard) {
+            break;
+        }
+    }
 }
 
-void GameRule7g523Helper::EndFlow() {
-    cout << "GameRule7g523Helper::EndFlow" << endl;
+// 玩家出牌
+void GameRule7g523Helper::playCard() {
+
+}
+
+// 判断游戏是否结束
+bool GameRule7g523Helper::isGameOver() {
+    // 牌堆为空，且有一个玩家手牌也为空时游戏结束
+    if (mScene->getRemainCardNum() == 0) {
+        for (const auto& player : mPlayers) {
+            if (player->getCurrentCardNum() == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void GameRule7g523Helper::startFlow() {
+    while (true && !mIsStopGame) {
+        drawCard();
+        mScene->freshAndDisplay();
+        playCard();
+        mScene->freshAndDisplay();
+        if (isGameOver()) {
+            endFlow();
+            break;
+        }
+    }
+}
+
+// 游戏结算流程
+void GameRule7g523Helper::endFlow() {
+    mIsStopGame = true;
 }

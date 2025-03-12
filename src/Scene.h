@@ -30,11 +30,16 @@ public:
     std::shared_ptr<Player> getPlayerByNumber(int number);
     void freshAndDisplay();
     void addPlayedCards(const std::shared_ptr<PlayedCards>& playedCards);
+    // 获取剩余牌数
+    int getRemainCardNum() const;
+    void setChanged(bool isChanged);
+    bool isChanged() const;
 
 private:
     std::vector<std::shared_ptr<Card>> mResourceCards;
     std::vector<std::shared_ptr<PlayedCards>> mPlayedCards;
     std::vector<std::shared_ptr<Player>> mPlayers;
+    bool mIsChanged = false;
 };
 
 #endif  // __SCENE_H__

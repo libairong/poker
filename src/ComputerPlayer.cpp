@@ -188,9 +188,13 @@ vector<Card> ComputerPlayer::getValidCards(const vector<Card>& myCards, const ve
 // 添加一张牌
 void ComputerPlayer::addCard(void) {
     shared_ptr<Card> card = mScene->takeCard();
+    if (card == nullptr) {
+        return;
+    }
     mCards.push_back(card);
     mCurrentCardNum = mCards.size();
 }
+
 // 玩家出牌
 void ComputerPlayer::playCard(void) {
     

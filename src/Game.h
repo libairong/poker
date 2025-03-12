@@ -21,6 +21,7 @@ public:
     Game(int human_num, int computer_num);
     ~Game();
     void start();
+    void end();
 private:
     void init();
 

@@ -54,6 +54,7 @@ Game::Game(int human_num, int computer_num):
 
     // 将玩家添加到规则参考类
     mGameFlow->setPlayers(mPlayers);
+    mGameFlow->setScene(mScene);
 
 #if 0
     Player::printPlayersInfo(mPlayers);
@@ -68,7 +69,9 @@ Game::~Game() {
 void Game::start() {
     // 开始游戏，这里应由GameFlow的规则轮盘决定游戏流程
     TerminalDisplay::getInstance().startDisplay();
-    while (true) {
+    // 启动游戏流程
+    mGameFlow->startFlow();
+    while (0) {
         for (auto player : mPlayers) {
             player->action();
             mScene->freshAndDisplay();
@@ -77,6 +80,7 @@ void Game::start() {
         break;
     }
 
+    sleep(1);
     TerminalDisplay::getInstance().stopDisplay();
 #define MAX_ROUND 5
 #if 0
@@ -118,6 +122,12 @@ void Game::start() {
         round++;
     }
 #endif
+}
+
+void Game::end() {
+    // 游戏结束，这里应由GameFlow的规则轮盘决定游戏流程
+    mGameFlow->endFlow();
+    TerminalDisplay::getInstance().stopDisplay();
 }
 
 // 增加测试模式，给指定玩家发特定的牌

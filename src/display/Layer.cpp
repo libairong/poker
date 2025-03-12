@@ -96,7 +96,7 @@ void Layer::setContentString(int x, int y, const string& str, Color color,
                                 const vector<Color>& effects) {
     // 需要忙等待直到前一帧渲染完成
     while (getIsDisplaying()) {
-        cout << __func__ << " busy waiting..." << endl;
+        // cout << __func__ << " busy waiting..." << endl;
     }
 
     if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) {
@@ -109,7 +109,7 @@ void Layer::setContentString(int x, int y, const string& str, Color color,
 void Layer::drawBorder(int x, int y, int width, int height, Color color, const vector<Color>& effects) {
     // 需要忙等待直到前一帧渲染完成
     while (getIsDisplaying()) {
-        cout << __func__ << " busy waiting..." << endl;
+        // cout << __func__ << " busy waiting..." << endl;
     }
     // 根据宽度和高度绘制边框, 如果是上下四个角，设置为'+'  如果是边框但不是角，设置为'-'或'|'
     for (int i = 0; i < width; ++i) {
