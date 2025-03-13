@@ -22,7 +22,7 @@ public:
     static bool cardValueCompare(int valueA, int valueB);
     static CombinateType cardsType(const vector<Card>& cards);
     // 增加一个静态函数，用于给牌排序
-    static void sortCards(vector<Card>& cards);
+    static void sortCards(vector<shared_ptr<Card>>& cards);
 
     // 实现GameFlow接口
     void startFlow() override;

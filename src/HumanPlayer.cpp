@@ -1,4 +1,5 @@
 #include "HumanPlayer.h"
+#include "7g523/GameRule7g523.h"
 
 HumanPlayer::HumanPlayer(string name, int position, shared_ptr<Scene> scene):
     Player(name, position, scene),
@@ -34,10 +35,17 @@ void HumanPlayer::action(void) {
 void HumanPlayer::addCard(void) {
     shared_ptr<Card> card = mScene->takeCard();
     if (card == nullptr) {
+        cout << "没有牌可以抽" << endl;
         return;
     }
     mCards.push_back(card);
     mCurrentCardNum = mCards.size();
+    if (mCurrentCardNum == getMaxCardNum()) {
+        // 排序
+        sort(mCards.begin(), mCards.end(), [](shared_ptr<Card> a, shared_ptr<Card> b) {
+            return GameRule7g523Helper::cardCompare(*a, *b);
+        });
+    }    
 
     clear();
     // 显示手牌，注意有坐标位置
