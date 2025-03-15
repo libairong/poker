@@ -1,4 +1,5 @@
 #include "ComputerPlayer.h"
+#include "7g523/GameRule7g523.h"
 
 ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<Scene> scene):
     Player(name, position, scene), Layer(0, 0) {
@@ -182,17 +183,25 @@ void ComputerPlayer::addCard(void) {
     mCards.push_back(card);
     mCurrentCardNum = mCards.size();
 
-    drawBorder(0, 0, 20, 4, Color::WHITE);  // 只执行一次就可以
-    setContentString(1, 1, Player::getName(), Color::WHITE);
+    // 排序，从小到大
+    sort(mCards.begin(), mCards.end(), [](shared_ptr<Card> a, shared_ptr<Card> b) {
+        return GameRule7g523Helper::cardCompare(*a, *b);
+    });
+
+    {
+        static bool isDrawBorder = false;
+        if (!isDrawBorder) {
+            isDrawBorder = true;
+            drawBorder(0, 0, 20, 4, Color::WHITE);  // 只执行一次就可以
+            setContentString(1, 1, Player::getName(), Color::WHITE);
+        }
+    }
     setContentString(1, 2, "手牌数: " + to_string(mCurrentCardNum), Color::WHITE);
 }
 
 //  显示最小的牌
-void ComputerPlayer::showMinCard(void) {
-    // 显示最小的牌
-    if (mCards.size() > 0) {
-        mCards[0]->print();
-    }
+shared_ptr<Card> ComputerPlayer::showMinCard(void) {
+    return mCards[0];
 }
 
 // 玩家出牌

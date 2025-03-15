@@ -22,7 +22,7 @@ map<int, int> GameRule7g523Helper::cardRankRule = {
 };
 
 GameRule7g523Helper::GameRule7g523Helper() {
-
+    mPlayerOrder.clear();
 }
 
 bool GameRule7g523Helper::cardCompare(const Card& a, const Card& b) {  // 升序排列，即小的在前
@@ -110,6 +110,30 @@ bool GameRule7g523Helper::isGameOver() {
 
 void GameRule7g523Helper::startFlow() {
     mScene->showNotice("    游戏开始!!!  ");
+    // 游戏开始，先抽牌到5张
+    drawCard();
+
+    // 判断第一个出牌的玩家，即谁有最小的牌，谁先出牌
+    shared_ptr<Card> minCard;
+    int minCardPlayerIndex = 0;
+    for (int i = 0; i < (int)mPlayers.size(); ++i) {
+        auto player = mPlayers[i];
+        if (minCard == nullptr) {
+            minCard = dynamic_pointer_cast<GameActions>(player)->showMinCard();
+        } else {
+            shared_ptr<Card> card = dynamic_pointer_cast<GameActions>(player)->showMinCard();
+            if (cardCompare(*card, *minCard)) {
+                minCard = card;
+                minCardPlayerIndex = i;
+            }
+        }
+    }
+    // 使用for 循环设置所有玩家出牌的顺序。从minCardPlayerIndex开始依次往后出牌。
+    for (int i = 0; i < (int)mPlayers.size(); ++i) {
+        setPlayersOrder((minCardPlayerIndex + i) % mPlayers.size());
+    }
+
+    mScene->showNotice("    " + minCard->toString() + " " + mPlayers[getPlayerOrderIndex()]->getName() + " 先出牌!!!  ");
     while (true && !mIsStopGame) {
         drawCard();
         mScene->freshAndDisplay();
@@ -125,4 +149,19 @@ void GameRule7g523Helper::startFlow() {
 // 游戏结算流程
 void GameRule7g523Helper::endFlow() {
     mIsStopGame = true;
+}
+
+// 玩家出牌顺序，轮流出牌，setPlayersOrder设置玩家出牌的顺序，getPlayerOrder获取当前玩家的出牌顺序
+void GameRule7g523Helper::setPlayersOrder(int playerIndex) {
+    mPlayerOrder.push_back(playerIndex);
+}
+
+// 从玩家出牌的顺序中获取下一个玩家的索引
+void GameRule7g523Helper::setNextPlayerOrderIndex() {
+    mCurrentPlayerOrderIndex = (mCurrentPlayerOrderIndex + 1) % mPlayerOrder.size();
+}
+
+// 获取当前玩家出牌的顺序索引，即当前轮到哪个玩家出牌 
+int GameRule7g523Helper::getPlayerOrderIndex() {
+    return mPlayerOrder[mCurrentPlayerOrderIndex];
 }

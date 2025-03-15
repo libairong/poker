@@ -40,12 +40,10 @@ void HumanPlayer::addCard(void) {
     }
     mCards.push_back(card);
     mCurrentCardNum = mCards.size();
-    if (mCurrentCardNum == getMaxCardNum()) {
-        // 排序
-        sort(mCards.begin(), mCards.end(), [](shared_ptr<Card> a, shared_ptr<Card> b) {
-            return GameRule7g523Helper::cardCompare(*a, *b);
-        });
-    }    
+    // 排序，从小到大
+    sort(mCards.begin(), mCards.end(), [](shared_ptr<Card> a, shared_ptr<Card> b) {
+        return GameRule7g523Helper::cardCompare(*a, *b);
+    });
 
     clear();
     // 显示手牌，注意有坐标位置
@@ -61,11 +59,8 @@ void HumanPlayer::addCard(void) {
     setContentString(currentCol++, currentRow, "    得分: " + to_string(getScore()), Color::WHITE);
 }
 
-void HumanPlayer::showMinCard(void) {
-    // 显示最小的牌
-    if (mCards.size() > 0) {
-        mCards[0]->print();
-    }
+shared_ptr<Card> HumanPlayer::showMinCard(void) {
+    return mCards[0];
 }
 
 void HumanPlayer::playCard(void) {

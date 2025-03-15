@@ -23,7 +23,7 @@ public:
     HumanPlayer(string name, int position, shared_ptr<Scene> scene);
     void action(void) override;
     void addCard(void) override;
-    void showMinCard(void) override;
+    shared_ptr<Card> showMinCard(void) override;
     void playCard(void) override;
 
 private:

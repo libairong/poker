@@ -6,12 +6,13 @@
 
 #ifndef __GAMEACTIONS_H__
 #define __GAMEACTIONS_H__
+#include "../Card.h"
 
 class GameActions {
 public:
     virtual void addCard() = 0;
     // 展示最小的牌是什么
-    virtual void showMinCard() = 0;
+    virtual shared_ptr<Card> showMinCard() = 0;
     virtual void playCard() = 0;
 };
 
