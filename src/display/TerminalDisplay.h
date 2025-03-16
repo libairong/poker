@@ -50,6 +50,8 @@ private:
     void setStartRowAndCol();
     void moveCursor(int row, int col) const;
     void fillDisplayRect();
+    // 刷新次数
+    void refreshDisplayCount();
 
     vector<shared_ptr<Layer>> mLayers;
     shared_ptr<Layer> mDisplayRect;
@@ -60,6 +62,7 @@ private:
     int startCol = 0;
     bool shouldExit = false;
     bool isStop = false;
+    int mRefreshCount = 0;
 };
 
 #endif // TERMINAL_DISPLAY_H

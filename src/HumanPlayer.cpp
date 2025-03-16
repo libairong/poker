@@ -1,5 +1,8 @@
+#include <string>
 #include "HumanPlayer.h"
 #include "7g523/GameRule7g523.h"
+
+using namespace std;
 
 HumanPlayer::HumanPlayer(string name, int position, shared_ptr<Scene> scene):
     Player(name, position, scene),
@@ -63,8 +66,32 @@ shared_ptr<Card> HumanPlayer::showMinCard(void) {
     return mCards[0];
 }
 
-void HumanPlayer::playCard(void) {
-
-    setContentString(6, 1, "    得分: " + to_string(getScore()), Color::WHITE);
+enum PlayCardResult HumanPlayer::playCard(void) {
+    // 获取输入，仅仅只有'a'、'd'、'w'、's'、'enter' 有效，输入其他字符无效继续等待
+    // 输入'enter'，则打出牌
+    char input;
+    while (true) {
+        input = mBoardInput->getInput();
+        switch (input) {
+            case 'a':
+                break;
+            case 'd':
+                break;
+            case 'w':
+                break;
+            case 's':
+                break;
+            case '\n':
+                continue;
+            default:
+                continue;
+        }
+        mScene->showNotice("    " + string(1, input) + "  ");
+    }
     
+
+    // DEBUG
+    mScene->showNotice("    " + string(1, input) + "  ");
+    setContentString(6, 1, "    得分: " + to_string(getScore()), Color::WHITE);
+    return PlayCardResult::PLAY_CONTINUE;
 }

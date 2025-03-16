@@ -24,7 +24,7 @@ public:
     void action(void) override;
     void addCard(void) override;
     shared_ptr<Card> showMinCard(void) override;
-    void playCard(void) override;
+    enum PlayCardResult playCard(void) override;
 
 private:
     shared_ptr<BoardInput> mBoardInput;

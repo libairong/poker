@@ -205,6 +205,8 @@ shared_ptr<Card> ComputerPlayer::showMinCard(void) {
 }
 
 // 玩家出牌
-void ComputerPlayer::playCard(void) {
+enum PlayCardResult ComputerPlayer::playCard(void) {
+    sleep(2);
     setContentString(2, 2, " 得分: " + to_string(getScore()), Color::WHITE);
+    return PlayCardResult::PLAY_CONTINUE;
 }

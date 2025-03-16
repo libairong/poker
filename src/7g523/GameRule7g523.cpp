@@ -92,6 +92,23 @@ void GameRule7g523Helper::sortCards(vector<shared_ptr<Card>>& cards) {
 
 // 玩家出牌
 void GameRule7g523Helper::playCard() {
+    enum PlayCardResult result = PlayCardResult::PLAY_CONTINUE;
+    while (true) {
+        if (result == PlayCardResult::PASS) {
+            break;
+        }
+        result = PlayCardResult::PASS;
+        for (int i = 0; i < (int)mPlayers.size(); ++i) {
+            auto player = mPlayers[getPlayerOrderIndex()];
+            // 轮到玩家出牌，玩家出牌
+            if (dynamic_pointer_cast<GameActions>(player)->playCard() == PlayCardResult::PLAY_CONTINUE) {
+                result = PlayCardResult::PLAY_CONTINUE;
+            }
+
+            // 设置下一个出牌的玩家
+            setNextPlayerOrderIndex();
+        }
+    }
 
 }
 
@@ -110,9 +127,31 @@ bool GameRule7g523Helper::isGameOver() {
 
 void GameRule7g523Helper::startFlow() {
     mScene->showNotice("    游戏开始!!!  ");
+    sleep(2);
     // 游戏开始，先抽牌到5张
     drawCard();
+    mScene->freshAndDisplay();
+    setPlayersOrder();
 
+    while (true && !mIsStopGame) {
+        playCard();
+        mScene->freshAndDisplay();
+        if (isGameOver()) {
+            endFlow();
+            break;
+        }
+        drawCard();
+        mScene->freshAndDisplay();
+    }
+}
+
+// 游戏结算流程
+void GameRule7g523Helper::endFlow() {
+    mIsStopGame = true;
+}
+
+// 玩家出牌顺序，轮流出牌，setPlayersOrder设置玩家出牌的顺序，getPlayerOrder获取当前玩家的出牌顺序
+void GameRule7g523Helper::setPlayersOrder() {
     // 判断第一个出牌的玩家，即谁有最小的牌，谁先出牌
     shared_ptr<Card> minCard;
     int minCardPlayerIndex = 0;
@@ -130,30 +169,10 @@ void GameRule7g523Helper::startFlow() {
     }
     // 使用for 循环设置所有玩家出牌的顺序。从minCardPlayerIndex开始依次往后出牌。
     for (int i = 0; i < (int)mPlayers.size(); ++i) {
-        setPlayersOrder((minCardPlayerIndex + i) % mPlayers.size());
+        mPlayerOrder.push_back((minCardPlayerIndex + i) % mPlayers.size());
     }
-
     mScene->showNotice("    " + minCard->toString() + " " + mPlayers[getPlayerOrderIndex()]->getName() + " 先出牌!!!  ");
-    while (true && !mIsStopGame) {
-        drawCard();
-        mScene->freshAndDisplay();
-        playCard();
-        mScene->freshAndDisplay();
-        if (isGameOver()) {
-            endFlow();
-            break;
-        }
-    }
-}
-
-// 游戏结算流程
-void GameRule7g523Helper::endFlow() {
-    mIsStopGame = true;
-}
-
-// 玩家出牌顺序，轮流出牌，setPlayersOrder设置玩家出牌的顺序，getPlayerOrder获取当前玩家的出牌顺序
-void GameRule7g523Helper::setPlayersOrder(int playerIndex) {
-    mPlayerOrder.push_back(playerIndex);
+    sleep(5);
 }
 
 // 从玩家出牌的顺序中获取下一个玩家的索引

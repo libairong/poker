@@ -14,6 +14,7 @@ void signalHandler(int signum) {
     }
     // 退出程序
     game.end();
+    exit(signum);
 }
 
 int main() {

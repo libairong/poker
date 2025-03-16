@@ -228,6 +228,7 @@ bool TerminalDisplay::startDisplay() {
             if (needUpdate) {
                 // cout << "更新屏幕" << endl;
                 // overlayAndDisplay();
+                refreshDisplayCount();
                 displayAll();
             }
             this_thread::sleep_for(chrono::milliseconds(20));
@@ -242,4 +243,9 @@ bool TerminalDisplay::startDisplay() {
 #endif
 
     return true;
+}
+
+void TerminalDisplay::refreshDisplayCount() {
+    mRefreshCount++;
+    mDisplayRect->setContent(4, 0, "fresh count: " + to_string(mRefreshCount) + " ", Color::RED);
 }

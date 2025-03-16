@@ -23,7 +23,7 @@ public:
     void action(void) override;
     void addCard(void) override;
     shared_ptr<Card> showMinCard(void) override;
-    void playCard(void) override;
+    enum PlayCardResult playCard(void) override;
 private:
     vector<Card> getValidCards(const vector<Card>& myCards, const vector<Card>& lastDisposedCards);
     vector<Card> searchSingleCards(const vector<Card>& myCards, const Card& lastCard);
