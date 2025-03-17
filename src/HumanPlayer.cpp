@@ -87,12 +87,36 @@ enum PlayCardResult HumanPlayer::playCard(void) {
         return PlayCardResult::PASS;
     }
 
+    // 直到用户出牌，或者放弃出牌
+
     // 等待用户输入，直到按下'q/enter'
     getInputAndMoveCursor();
 
     // 根据选中的牌，出牌（要pop 掉出掉的牌和牌状态）
+    vector<shared_ptr<Card>> cardsToPlay;
+    for (int i = 0; i < getCurrentCardNum(); ++i) {
+        if (cardStatus[i]) {
+            cardsToPlay.push_back(mCards[i]);
+        }
+    }
 
+    // 如果没有选中的牌，则放弃出牌
+    if (cardsToPlay.empty()) {
+        return PlayCardResult::PASS;
+    }
 
+    // 将当前对象转成shared_ptr<Player> 对象，然后将cardsToPlay 传递给PlayedCards 对象，然后出牌
+    shared_ptr<Player> player = dynamic_pointer_cast<Player>(shared_from_this());
+    shared_ptr<PlayedCards> playedCards = make_shared<PlayedCards>(player, cardsToPlay);
+    mScene->playCards(playedCards);
+    // 出牌，并更新状态
+    for (auto card : cardsToPlay) {
+        mCards.erase(remove(mCards.begin(), mCards.end(), card), mCards.end());
+        cardStatus.erase(remove(cardStatus.begin(), cardStatus.end(), true), cardStatus.end());
+        mCurrentCardNum = mCards.size();
+    }
+    cursorPos = 0; // 出牌后游标重置为0，方便下一次出牌
+    showInfo();
     // DEBUG
     return PlayCardResult::PLAY_CONTINUE;
 }

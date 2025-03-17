@@ -104,6 +104,7 @@ void GameRule7g523Helper::playCard() {
             if (dynamic_pointer_cast<GameActions>(player)->playCard() == PlayCardResult::PLAY_CONTINUE) {
                 result = PlayCardResult::PLAY_CONTINUE;
             }
+            mScene->freshAndDisplay();
 
             // 设置下一个出牌的玩家
             setNextPlayerOrderIndex();

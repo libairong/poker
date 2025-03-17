@@ -31,7 +31,6 @@ void Scene::initResourceCards() {
     mResourceCards.push_back(make_shared<Card>(static_cast<Suit>(3), BIG_JOKER_VALUE)); // 大王
     srand((unsigned int)time(NULL));
     random_shuffle(mResourceCards.begin(), mResourceCards.end());
-    setChanged(true);
 }
 
 shared_ptr<Card> Scene::takeCard() {
@@ -41,7 +40,6 @@ shared_ptr<Card> Scene::takeCard() {
     }
     shared_ptr<Card> card = mResourceCards.back();
     mResourceCards.pop_back();
-    setChanged(true);
     return card;
 }
 
@@ -52,7 +50,6 @@ shared_ptr<PlayedCards> Scene::getLastPlayedCards() {
 
 void Scene::setPlayers(const vector<shared_ptr<Player>>& players) {
     mPlayers = players;
-    setChanged(true);
 }
 
 shared_ptr<Player> Scene::getPlayerByNumber(int number) {
@@ -95,7 +92,11 @@ void Scene::freshAndDisplay() {
             for (int i = 0; i < (int)playedCard->mCards.size(); i++) {
                 Color color = playedCard->mCards[i]->getSuit() % 2 == 1 ? Color::WHITE : Color::RED;
                 setContentString(currentCol++, currentRow, playedCard->mCards[i]->getSuitString() + playedCard->mCards[i]->getValueString(), color);
-                setContentString(currentCol++, currentRow, " ", Color::RESET);
+                setContentString(currentCol++, currentRow, " ", Color::BLACK);
+            }
+            // 填充空格
+            for (int i = 0; i < (int)(20 - playedCard->mCards.size()); i++) {
+                setContentString(currentCol++, currentRow, " ", Color::BLACK);
             }
         }
     }
@@ -108,22 +109,13 @@ void Scene::freshAndDisplay() {
 }
 
 // addPlayedCards
-void Scene::addPlayedCards(const shared_ptr<PlayedCards>& playedCards) {
+void Scene::playCards(const shared_ptr<PlayedCards>& playedCards) {
     mPlayedCards.push_back(playedCards);
-    setChanged(true);
 }
 
 // 获取剩余牌数
 int Scene::getRemainCardNum() const {
     return mResourceCards.size();
-}
-
-void Scene::setChanged(bool isChanged) {
-    mIsChanged = isChanged;
-}
-
-bool Scene::isChanged() const {
-    return mIsChanged;
 }
 
 // 增加一个公告显示函数，用于显示公告类的信息

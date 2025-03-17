@@ -31,6 +31,7 @@ private:
     void showInfo(void);
     // 用户输入转换为游标移动方向
     void getInputAndMoveCursor(void);
+    // 用户输入转换为出牌操
     shared_ptr<BoardInput> mBoardInput;
 
     // 定义游标位置变量
