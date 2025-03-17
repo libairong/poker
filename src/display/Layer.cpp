@@ -93,14 +93,14 @@ void Layer::setContent(int x, int y, const Cell& cell) {
 // 编写函数void setContentOutoffAscii(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {});
 // 用于设置非ascii字符
 void Layer::setContentString(int x, int y, const string& str, Color color,
-                                const vector<Color>& effects) {
+                                const vector<Color>& effects, int fg, int bg) {
     // 需要忙等待直到前一帧渲染完成
     while (getIsDisplaying()) {
         // cout << __func__ << " busy waiting..." << endl;
     }
 
     if (x >= 0 && x < mWidth && y >= 0 && y < mHeight) {
-        mContent[y][x] = Cell(str, color, effects);  // 设置字符、颜色和特殊效果
+        mContent[y][x] = Cell(str, color, effects, fg, bg);  // 设置字符、颜色和特殊效果
     }
     setDirty(true);
 }

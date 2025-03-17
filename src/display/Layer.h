@@ -89,8 +89,6 @@ struct Cell {
 
             if (bg < 0) bgGray = 0;
             if (bg > 23) bgGray = 23;
-
-
 	}
 };
 
@@ -133,7 +131,7 @@ public:
     /* 推荐用这个函数*/
     // 设置非ascii字符，字符串只需要确定起点，后面的字符串只需要cols 加1 即可，在显示的时候自动接上。不过这个有显示引擎决定，图层这里就是这么约定
     // 每行的x 实际打印只会从0开始，设置x 无效。
-    void setContentString(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {});
+    void setContentString(int x, int y, const std::string& str, Color color = Color::RESET, const std::vector<Color>& effects = {}, int fg = 0, int bg = 0);
 
     // 获取指定位置的字符及效果
     Cell getContent(int x, int y) const;

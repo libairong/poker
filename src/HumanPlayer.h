@@ -27,7 +27,16 @@ public:
     enum PlayCardResult playCard(void) override;
 
 private:
+    // 显示自己信息，参数是游标移动方向，0表示不移动（选定当前卡牌），1表示向右移动，-1表示向左移动
+    void showInfo(void);
+    // 用户输入转换为游标移动方向
+    void getInputAndMoveCursor(void);
     shared_ptr<BoardInput> mBoardInput;
+
+    // 定义游标位置变量
+    int cursorPos = 0;
+    // 定义变量，记录牌的状态，包括是否被选中
+    vector<bool> cardStatus;
 };
 
 #endif  // __HUMANPLAYER_H__
