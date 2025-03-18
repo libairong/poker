@@ -55,6 +55,7 @@ Game::Game(int human_num, int computer_num):
     // 将玩家添加到规则参考类
     mGameFlow->setPlayers(mPlayers);
     mGameFlow->setScene(mScene);
+    mScene->setGameFlowAndRules(mGameFlow);
 
 #if 0
     Player::printPlayersInfo(mPlayers);

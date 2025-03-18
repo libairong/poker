@@ -11,7 +11,6 @@
 
 using namespace std;
 class Scene;
-class GameFlow;
 /**
  * 玩家基类
  */
@@ -31,6 +30,8 @@ public:
     virtual vector<shared_ptr<Card>>& getCards() final;
     virtual int getScore() final;
     virtual void setScore(int score) final;
+    // 获取mScene
+    virtual shared_ptr<Scene> getScene() final;
 
     // 添加一个静态的方法，用于DEBUG，打印所有玩家的信息
     static void printPlayersInfo(const vector<shared_ptr<Player>>& players);

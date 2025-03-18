@@ -1,5 +1,5 @@
 #include "ComputerPlayer.h"
-#include "7g523/GameRule7g523.h"
+#include "GameFlow.h"
 
 ComputerPlayer::ComputerPlayer(string name, int position, shared_ptr<Scene> scene):
     Player(name, position, scene), Layer(0, 0) {
@@ -184,10 +184,9 @@ void ComputerPlayer::addCard(void) {
     mCurrentCardNum = mCards.size();
 
     // 排序，从小到大
-    sort(mCards.begin(), mCards.end(), [](shared_ptr<Card> a, shared_ptr<Card> b) {
-        return GameRule7g523Helper::cardCompare(*a, *b);
+    sort(mCards.begin(), mCards.end(), [this](const shared_ptr<Card>& a, const shared_ptr<Card>& b) {
+        return getScene()->getGameFlowAndRules()->cardCompare(*a, *b);
     });
-
     {
         static bool isDrawBorder = false;
         if (!isDrawBorder) {
@@ -208,5 +207,5 @@ shared_ptr<Card> ComputerPlayer::showMinCard(void) {
 enum PlayCardResult ComputerPlayer::playCard(void) {
     sleep(2);
     setContentString(2, 2, " 得分: " + to_string(getScore()), Color::WHITE);
-    return PlayCardResult::PLAY_CONTINUE;
+    return PlayCardResult::PASS;
 }

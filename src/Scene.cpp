@@ -44,6 +44,9 @@ shared_ptr<Card> Scene::takeCard() {
 }
 
 shared_ptr<PlayedCards> Scene::getLastPlayedCards() {
+    if (mPlayedCards.empty()) {
+        return nullptr;
+    }
     shared_ptr<PlayedCards> playedCard = mPlayedCards.back();
     return playedCard;
 }
@@ -56,6 +59,16 @@ shared_ptr<Player> Scene::getPlayerByNumber(int number) {
     if (number > 0 && number < (int)mPlayers.size())
         return mPlayers.at(number);
     return nullptr;
+}
+
+// 规则说明类的设置
+void Scene::setGameFlowAndRules(const std::shared_ptr<GameFlow>& gameFlow) {
+    mGameFlowAndRules = gameFlow;
+}
+
+// 获取规则说明类
+std::shared_ptr<GameFlow> Scene::getGameFlowAndRules() const {
+    return mGameFlowAndRules;
 }
 
 void Scene::freshAndDisplay() {

@@ -87,6 +87,10 @@ void Player::setScore(int score) {
     mScore = score;
 }
 
+shared_ptr<Scene> Player::getScene() {
+    return mScene;
+}
+
 // 添加一个静态的方法，用于DEBUG，打印所有玩家的信息
 void Player::printPlayersInfo(const vector<shared_ptr<Player>>& players) {
     for (const auto& player : players) {
