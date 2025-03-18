@@ -58,6 +58,16 @@ shared_ptr<Player> Scene::getPlayerByNumber(int number) {
     return nullptr;
 }
 
+// 规则说明类的设置
+void Scene::setGameFlowAndRules(const std::shared_ptr<GameFlow>& gameFlow) {
+    mGameFlowAndRules = gameFlow;
+}
+
+// 获取规则说明类
+std::shared_ptr<GameFlow> Scene::getGameFlowAndRules() const {
+    return mGameFlowAndRules;
+}
+
 void Scene::freshAndDisplay() {
     int currentCol = 3;
     int currentRow = 1;

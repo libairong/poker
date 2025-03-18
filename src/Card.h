@@ -8,6 +8,22 @@
 
 using namespace std;
 
+// 扑克牌组合类型
+enum CombinateType {
+    SINGLE,
+    PAIR,
+    THREE,
+    FOUR,
+    // 下面都是5张牌的组合，排在后面的比前面的组合大
+    STRAIGHT,
+    SINGLE_SUIT,
+    // 三带二
+    THREE_AND_A_PAIR,
+    FOUR_AND_A_SINGLE,
+    SIRAIGHT_AND_SINGLE_SUIT,
+    INVALID_COMBINATE
+};
+
 const string CARD_SUIT[4]    =  {"♦", "♣", "♥", "♠"};
 const string CARD_VALUE[15]   = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "LJ", "BJ"};
 const int    BIG_JOKER_VALUE  = 14;

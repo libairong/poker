@@ -1,6 +1,6 @@
 #include <string>
 #include "HumanPlayer.h"
-#include "7g523/GameRule7g523.h"
+#include "GameFlow.h"
 
 using namespace std;
 
@@ -70,8 +70,8 @@ void HumanPlayer::addCard(void) {
     mCurrentCardNum = mCards.size();
     cardStatus.push_back(false);
     // 排序，从小到大
-    sort(mCards.begin(), mCards.end(), [](shared_ptr<Card> a, shared_ptr<Card> b) {
-        return GameRule7g523Helper::cardCompare(*a, *b);
+    sort(mCards.begin(), mCards.end(), [this](shared_ptr<Card> a, shared_ptr<Card> b) {
+        return getScene()->getGameFlowAndRules()->cardCompare(*a, *b);
     });
 
     // 显示手牌
@@ -87,38 +87,44 @@ enum PlayCardResult HumanPlayer::playCard(void) {
         return PlayCardResult::PASS;
     }
 
-    // 直到用户出牌，或者放弃出牌
+    // 直到用户出牌符合规则，或者放弃出牌
+    while (true) {
+        // 等待用户输入，直到按下'q/enter'
+        getInputAndMoveCursor();
 
-    // 等待用户输入，直到按下'q/enter'
-    getInputAndMoveCursor();
-
-    // 根据选中的牌，出牌（要pop 掉出掉的牌和牌状态）
-    vector<shared_ptr<Card>> cardsToPlay;
-    for (int i = 0; i < getCurrentCardNum(); ++i) {
-        if (cardStatus[i]) {
-            cardsToPlay.push_back(mCards[i]);
+        // 根据选中的牌，出牌（要pop 掉出掉的牌和牌状态）
+        vector<shared_ptr<Card>> cardsToPlay;
+        for (int i = 0; i < getCurrentCardNum(); ++i) {
+            if (cardStatus[i]) {
+                cardsToPlay.push_back(mCards[i]);
+            }
         }
-    }
 
-    // 如果没有选中的牌，则放弃出牌
-    if (cardsToPlay.empty()) {
-        return PlayCardResult::PASS;
-    }
+        // 如果没有选中的牌，则放弃出牌
+        if (cardsToPlay.empty()) {
+            return PlayCardResult::PASS;
+        }
+        // 将当前对象转成shared_ptr<Player> 对象，然后将cardsToPlay 传递给PlayedCards 对象，然后出牌
+        shared_ptr<Player> player = dynamic_pointer_cast<Player>(shared_from_this());
+        shared_ptr<PlayedCards> playedCards = make_shared<PlayedCards>(player, cardsToPlay);
 
-    // 将当前对象转成shared_ptr<Player> 对象，然后将cardsToPlay 传递给PlayedCards 对象，然后出牌
-    shared_ptr<Player> player = dynamic_pointer_cast<Player>(shared_from_this());
-    shared_ptr<PlayedCards> playedCards = make_shared<PlayedCards>(player, cardsToPlay);
-    mScene->playCards(playedCards);
-    // 出牌，并更新状态
-    for (auto card : cardsToPlay) {
-        mCards.erase(remove(mCards.begin(), mCards.end(), card), mCards.end());
-        cardStatus.erase(remove(cardStatus.begin(), cardStatus.end(), true), cardStatus.end());
-        mCurrentCardNum = mCards.size();
+        if (getScene()->getGameFlowAndRules()->canPlayCard(playedCards)) {
+            // 打印出牌信息
+            getScene()->showNotice("不能这么出牌！");
+            continue;
+        }
+
+        getScene()->playCards(playedCards);
+        // 出牌，并更新状态
+        for (auto card : cardsToPlay) {
+            mCards.erase(remove(mCards.begin(), mCards.end(), card), mCards.end());
+            cardStatus.erase(remove(cardStatus.begin(), cardStatus.end(), true), cardStatus.end());
+            mCurrentCardNum = mCards.size();
+        }
+        cursorPos = 0; // 出牌后游标重置为0，方便下一次出牌
+        showInfo();
+        return PlayCardResult::PLAY_CONTINUE;
     }
-    cursorPos = 0; // 出牌后游标重置为0，方便下一次出牌
-    showInfo();
-    // DEBUG
-    return PlayCardResult::PLAY_CONTINUE;
 }
 
 // 显示手牌，还包括游标位置等信息
