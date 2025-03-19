@@ -108,7 +108,7 @@ enum PlayCardResult HumanPlayer::playCard(void) {
         shared_ptr<Player> player = dynamic_pointer_cast<Player>(shared_from_this());
         shared_ptr<PlayedCards> playedCards = make_shared<PlayedCards>(player, cardsToPlay);
 
-        if (getScene()->getGameFlowAndRules()->canPlayCard(playedCards)) {
+        if (!getScene()->getGameFlowAndRules()->canPlayCard(playedCards)) {
             // 打印出牌信息
             getScene()->showNotice("不能这么出牌！");
             continue;

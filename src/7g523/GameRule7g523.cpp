@@ -65,17 +65,16 @@ void GameRule7g523Helper::sortCards(vector<shared_ptr<Card>>& cards) {
 
 // 玩家出牌
 void GameRule7g523Helper::playCard() {
-    enum PlayCardResult result = PlayCardResult::PLAY_CONTINUE;
     while (true) {
-        if (result == PlayCardResult::PASS) {
-            break;
-        }
-        result = PlayCardResult::PASS;
         for (int i = 0; i < (int)mPlayers.size(); ++i) {
             auto player = mPlayers[getPlayerOrderIndex()];
+            // 判断出牌堆上一个出牌的是不是自己，如果是表面这是一轮新的开始。需要退出出牌循环。如果是，但是玩家手牌数量不为最大数量说明需要重新抽牌，则也需要退出循环。
+            if (mScene->getLastPlayedCards() != nullptr &&
+                player == mScene->getLastPlayedCards()->mPlayer && player->getCurrentCardNum() != player->getMaxCardNum()) {
+                return;
+            }
             // 轮到玩家出牌，玩家出牌
             if (dynamic_pointer_cast<GameActions>(player)->playCard() == PlayCardResult::PLAY_CONTINUE) {
-                result = PlayCardResult::PLAY_CONTINUE;
             }
             mScene->freshAndDisplay();
 
@@ -96,11 +95,11 @@ bool GameRule7g523Helper::canPlayCard(const shared_ptr<PlayedCards>& playedCards
     // 判断这个要打出去的组合符不符合规则
     CombinateType combinateType = cardsType(playedCards->mCards);
     if (combinateType == CombinateType::INVALID_COMBINATE) {
+
         return false;
     }
-    
     // 判断上一个出牌的是不是自己，如果是表面这是一轮新的开始，则可以出牌
-    if (playedCards->mPlayer == mScene->getLastPlayedCards()->mPlayer) {
+    if (mScene->getLastPlayedCards() == nullptr || playedCards->mPlayer == mScene->getLastPlayedCards()->mPlayer) {
         return true;
     }
 
@@ -201,10 +200,11 @@ CombinateType GameRule7g523Helper::cardsType(const vector<shared_ptr<Card>>& car
 
 // 函数：判断是否为对子，两张牌的数值必须相同
 bool GameRule7g523Helper::isPair(const vector<shared_ptr<Card>>& cards) {
-    for (int i = 0; i < (int)cards.size(); i += 2) {
-        if (cards[i]->getValue() != cards[i + 1]->getValue()) {
-            return false;
-        }
+    if (cards.size() != 2) {
+        return false;
+    }
+    if (cards[0]->getValue() != cards[1]->getValue()) {
+        return false;
     }
     return true;
 }
@@ -315,7 +315,7 @@ bool GameRule7g523Helper::isGameOver() {
 
 void GameRule7g523Helper::startFlow() {
     mScene->showNotice("    游戏开始!!!  ");
-    sleep(2);
+    sleep(1);
     // 游戏开始，先抽牌到5张
     drawCard();
     mScene->freshAndDisplay();
@@ -360,7 +360,7 @@ void GameRule7g523Helper::setPlayersOrder() {
         mPlayerOrder.push_back((minCardPlayerIndex + i) % mPlayers.size());
     }
     mScene->showNotice("    " + minCard->toString() + " " + mPlayers[getPlayerOrderIndex()]->getName() + " 先出牌!!!  ");
-    sleep(5);
+    sleep(2);
 }
 
 // 从玩家出牌的顺序中获取下一个玩家的索引

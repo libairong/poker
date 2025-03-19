@@ -44,7 +44,6 @@ public:
 
     virtual bool cardCompare(const Card& a, const Card& b) = 0;
     virtual bool cardValueCompare(int valueA, int valueB) = 0;
-    virtual CombinateType cardsType(const vector<Card>& cards) = 0;
     virtual void sortCards(vector<shared_ptr<Card>>& cards) = 0;
 
 protected:

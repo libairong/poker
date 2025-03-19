@@ -44,6 +44,9 @@ shared_ptr<Card> Scene::takeCard() {
 }
 
 shared_ptr<PlayedCards> Scene::getLastPlayedCards() {
+    if (mPlayedCards.empty()) {
+        return nullptr;
+    }
     shared_ptr<PlayedCards> playedCard = mPlayedCards.back();
     return playedCard;
 }
